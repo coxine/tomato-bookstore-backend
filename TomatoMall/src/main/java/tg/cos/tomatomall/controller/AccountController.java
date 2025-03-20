@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.*;
 import tg.cos.tomatomall.service.AccountService;
 import tg.cos.tomatomall.vo.Response;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
 
-    @Resource
+    @Autowired
     AccountService accountService;
 
     /**
