@@ -75,8 +75,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.example.tomatomall.TomatoMallApplication</mainClass>
-                    <skip>true</skip>
+                    <mainClass>tg.cos.tomatomall.TomatoMallApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
