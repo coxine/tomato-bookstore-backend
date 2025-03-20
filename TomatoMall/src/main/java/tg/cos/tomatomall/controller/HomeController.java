@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class HomeController {
     @GetMapping
     public String home() {
-        return "Welcome to LRReader!\nHere is the backend of this application!";
+        return "Welcome to Tomato Mall!\nHere is the backend of this application!";
     }
 
     @PostMapping
