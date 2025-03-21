@@ -3,6 +3,7 @@ package tg.cos.tomatomall.controller;
 import org.springframework.web.bind.annotation.*;
 
 import tg.cos.tomatomall.service.AccountService;
+import tg.cos.tomatomall.vo.AccountVO;
 import tg.cos.tomatomall.vo.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,32 +18,48 @@ public class AccountController {
     /**
      * 获取用户详情
      */
-    @GetMapping()
-    public Response getUser() {
-        return null;
+    @GetMapping("/{username}")
+    public Response<?> getUser(@PathVariable("username") String username) {
+        AccountVO accountVO = accountService.getUserDetails(username);
+        if (accountVO != null) {
+            return Response.buildSuccess(accountVO);
+        }
+        return Response.buildFailure("用户不存在","1000");
     }
 
     /**
      * 创建新的用户
      */
     @PostMapping()
-    public Response createUser() {
-        return null;
+    public Response<?> createUser(@RequestBody AccountVO accountVO) {
+        String result = accountService.createUser(accountVO);
+        if ("创建用户成功".equals(result)) {
+            return Response.buildSuccess(result);
+        }
+        return Response.buildFailure(result,"1001");
     }
 
     /**
      * 更新用户信息
      */
     @PutMapping()
-    public Response updateUser() {
-        return null;
+    public Response<?> updateUser(@RequestBody AccountVO accountVO) {
+        String result = accountService.updateUser(accountVO);
+        if ("用户信息更新成功".equals(result)) {
+            return Response.buildSuccess(result);
+        }
+        return Response.buildFailure(result,"1002");
     }
 
     /**
      * 登录
      */
     @PostMapping("/login")
-    public Response login() {
-        return null;
+    public Response<?> login(@RequestBody AccountVO accountVO) {
+        String result = accountService.login(accountVO.getUsername(), accountVO.getPassword());
+        if ("登录成功".equals(result)) {
+            return Response.buildSuccess(result);
+        }
+        return Response.buildFailure(result,"1003");
     }
 }
