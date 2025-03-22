@@ -11,5 +11,6 @@
 
 ## 开发规范
 
-- 详见飞书文档中`开发规范`部分
-- https://scnep3uutqj7.feishu.cn/wiki/QY40wxokBi296vkoxHqcBIYAnqd
+- 详见Notion文档中`开发规范`部分
+- https://www.notion.so/njuse/1befb45495c780acba08d7937b08eaf8
+- https://www.notion.so/njuse/1befb45495c780acb3cdfb16d1706924
