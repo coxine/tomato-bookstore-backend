@@ -44,6 +44,7 @@ public class AccountController {
      */
     @PutMapping()
     public Response<?> updateUser(@RequestBody AccountVO accountVO) {
+
         String result = accountService.updateUser(accountVO);
         if ("用户信息更新成功".equals(result)) {
             return Response.buildSuccess(result);
@@ -57,7 +58,7 @@ public class AccountController {
     @PostMapping("/login")
     public Response<?> login(@RequestBody AccountVO accountVO) {
         String result = accountService.login(accountVO.getUsername(), accountVO.getPassword());
-        if ("登录成功".equals(result)) {
+        if (!"用户不存在/用户密码错误".equals(result)) {
             return Response.buildSuccess(result);
         }
         return Response.buildFailure(result,"1003");

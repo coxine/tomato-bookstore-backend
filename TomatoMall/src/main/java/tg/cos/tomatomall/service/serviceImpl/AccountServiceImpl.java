@@ -2,13 +2,14 @@ package tg.cos.tomatomall.service.serviceImpl;
 
 import org.springframework.stereotype.Service;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import tg.cos.tomatomall.po.Account;
 import tg.cos.tomatomall.repository.AccountRepository;
 import tg.cos.tomatomall.service.AccountService;
 import tg.cos.tomatomall.vo.AccountVO;
+import tg.cos.tomatomall.util.SecurityUtil;
+import tg.cos.tomatomall.util.TokenUtil;
 
 import java.util.Optional;
 
@@ -17,7 +18,13 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    TokenUtil tokenUtil;
+
+    @Autowired
+    SecurityUtil securityUtil;
     @Override
+
     public AccountVO getUserDetails(String username) {
         Optional<Account> accountOptional = accountRepository.findByUsername(username);
         if (accountOptional.isPresent()) {
@@ -40,19 +47,27 @@ public class AccountServiceImpl implements AccountService {
     public String login(String username, String password) {
         Optional<Account> accountOptional = accountRepository.findByUsername(username);
         if (accountOptional.isPresent() && accountOptional.get().getPassword().equals(password)) {
-            return "登录成功";
+            return tokenUtil.getToken(accountOptional.get());
         }
         return "用户不存在/用户密码错误";
     }
 
     @Override
     public String updateUser(AccountVO accountVO) {
-        Optional<Account> accountOptional = accountRepository.findByUsername(accountVO.getUsername());
-        if (accountOptional.isPresent()) {
-            Account account = accountVO.toAccount();
-            accountRepository.save(account);
+        System.out.println("approach impl");
+        Account account=securityUtil.getCurrentUser();
+        if(account!=null) {    // 只更新非空字段
+            if (accountVO.getUsername() != null) account.setUsername(accountVO.getUsername());
+            if (accountVO.getPassword() != null) account.setPassword(accountVO.getPassword());
+            if (accountVO.getName() != null) account.setName(accountVO.getName());
+            if (accountVO.getAvatar() != null) account.setAvatar(accountVO.getAvatar());
+            if (accountVO.getTelephone() != null) account.setTelephone(accountVO.getTelephone());
+            if (accountVO.getEmail() != null) account.setEmail(accountVO.getEmail());
+            if (accountVO.getLocation() != null) account.setLocation(accountVO.getLocation());
+            accountRepository.save(account); // 更新已有用户
             return "用户信息更新成功";
         }
         return "用户不存在";
     }
+
 }
