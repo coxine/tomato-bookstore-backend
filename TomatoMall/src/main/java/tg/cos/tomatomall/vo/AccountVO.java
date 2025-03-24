@@ -12,6 +12,7 @@ public class AccountVO {
     private Integer id;
     private String username;
     private String name;
+    private String role;
     private String password;
     private String avatar;
     private String telephone;
@@ -26,6 +27,7 @@ public class AccountVO {
         account.setUsername(username);
         account.setName(name);
         account.setPassword(password);
+        account.setAvatar(role);
         if (avatar != null) {
             account.setAvatar(avatar);
         }

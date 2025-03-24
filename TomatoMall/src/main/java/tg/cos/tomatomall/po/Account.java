@@ -26,6 +26,9 @@ public class Account {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "role", nullable = false)
+    private String role;
+
     @Column(name = "avatar")
     private String avatar;
 
@@ -44,6 +47,7 @@ public class Account {
         vo.setUsername(username);
         vo.setPassword(password);
         vo.setName(name);
+        vo.setRole(role);
         vo.setAvatar(avatar);
         vo.setTelephone(telephone);
         vo.setEmail(email);
