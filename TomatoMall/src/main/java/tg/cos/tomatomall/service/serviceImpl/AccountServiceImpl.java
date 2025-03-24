@@ -59,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String updateUser(AccountVO accountVO) {
-        System.out.println("approach impl");
+//        System.out.println("approach impl");
         Account account=securityUtil.getCurrentUser();
         if(account!=null) {    // 只更新非空字段
             if (accountVO.getUsername() != null) account.setUsername(accountVO.getUsername());

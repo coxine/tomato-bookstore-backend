@@ -12,8 +12,8 @@ public class SecurityUtil {
     HttpServletRequest httpServletRequest;
 
     public Account getCurrentUser(){
-        System.out.println("approach securityUtil");
-        System.out.println((Account) httpServletRequest.getSession().getAttribute("currentUser"));
+//        System.out.println("approach securityUtil");
+//        System.out.println((Account) httpServletRequest.getSession().getAttribute("currentUser"));
         return (Account) httpServletRequest.getSession().getAttribute("currentUser");
     }
 }
