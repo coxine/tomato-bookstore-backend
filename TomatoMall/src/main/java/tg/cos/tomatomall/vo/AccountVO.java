@@ -27,7 +27,7 @@ public class AccountVO {
         account.setUsername(username);
         account.setName(name);
         account.setPassword(password);
-        account.setAvatar(role);
+        account.setRole(role);
         if (avatar != null) {
             account.setAvatar(avatar);
         }
