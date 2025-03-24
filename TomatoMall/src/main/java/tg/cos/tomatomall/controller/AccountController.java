@@ -24,7 +24,7 @@ public class AccountController {
         if (accountVO != null) {
             return Response.buildSuccess(accountVO);
         }
-        return Response.buildFailure("用户不存在","1000");
+        return Response.buildFailure("用户不存在","400");
     }
 
     /**
@@ -36,7 +36,7 @@ public class AccountController {
         if ("创建用户成功".equals(result)) {
             return Response.buildSuccess(result);
         }
-        return Response.buildFailure(result,"1001");
+        return Response.buildFailure(result,"400");
     }
 
     /**
@@ -49,7 +49,7 @@ public class AccountController {
         if ("用户信息更新成功".equals(result)) {
             return Response.buildSuccess(result);
         }
-        return Response.buildFailure(result,"1002");
+        return Response.buildFailure(result,"400");
     }
 
     /**
@@ -61,6 +61,6 @@ public class AccountController {
         if (!"用户不存在/用户密码错误".equals(result)) {
             return Response.buildSuccess(result);
         }
-        return Response.buildFailure(result,"1003");
+        return Response.buildFailure(result,"400");
     }
 }

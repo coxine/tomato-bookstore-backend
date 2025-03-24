@@ -12,11 +12,14 @@ import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.util.TokenUtil;
 
 import java.util.Optional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();  // 创建加密器
 
     @Autowired
     TokenUtil tokenUtil;
@@ -39,6 +42,8 @@ public class AccountServiceImpl implements AccountService {
             return "用户名已存在";
         }
         Account account = accountVO.toAccount();
+        String encodedPassword = passwordEncoder.encode(accountVO.getPassword());
+        account.setPassword(encodedPassword);
         accountRepository.save(account);
         return "创建用户成功";
     }
@@ -46,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String login(String username, String password) {
         Optional<Account> accountOptional = accountRepository.findByUsername(username);
-        if (accountOptional.isPresent() && accountOptional.get().getPassword().equals(password)) {
+        if (accountOptional.isPresent() && passwordEncoder.matches(password, accountOptional.get().getPassword())) {
             return tokenUtil.getToken(accountOptional.get());
         }
         return "用户不存在/用户密码错误";
@@ -58,7 +63,11 @@ public class AccountServiceImpl implements AccountService {
         Account account=securityUtil.getCurrentUser();
         if(account!=null) {    // 只更新非空字段
             if (accountVO.getUsername() != null) account.setUsername(accountVO.getUsername());
-            if (accountVO.getPassword() != null) account.setPassword(accountVO.getPassword());
+            if (accountVO.getPassword() != null)
+            {
+                String encodedPassword = passwordEncoder.encode(accountVO.getPassword());
+                account.setPassword(encodedPassword);
+            }
             if (accountVO.getName() != null) account.setName(accountVO.getName());
             if (accountVO.getAvatar() != null) account.setAvatar(accountVO.getAvatar());
             if (accountVO.getTelephone() != null) account.setTelephone(accountVO.getTelephone());
