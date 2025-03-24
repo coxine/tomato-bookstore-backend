@@ -50,6 +50,7 @@ public class AccountController {
             return Response.buildSuccess(result);
         }
         return Response.buildFailure(result,"400");
+
     }
 
     /**
