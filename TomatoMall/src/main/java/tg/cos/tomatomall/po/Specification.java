@@ -20,8 +20,12 @@ public class Specification {
     @Column(name = "value", nullable = false)
     private String value;
 
-    @Column(name = "product_id", nullable = false)
-    private Integer productId;
+//    @Column(name = "product_id", nullable = false)
+//    private Integer productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "FK_PROCUDT_SPECIFICATION"))
+    private Product product;
 
 
 }

@@ -33,7 +33,7 @@ public class Product {
     @Column(name = "detail")
     private String detail;
 
-    @OneToMany(mappedBy = "productId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Specification> specifications;
 
 //    @Column(name = "stockpile")
