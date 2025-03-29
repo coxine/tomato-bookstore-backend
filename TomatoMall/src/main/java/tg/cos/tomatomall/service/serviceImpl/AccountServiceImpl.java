@@ -48,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
         String encodedPassword = passwordEncoder.encode(accountDTO.getPassword());
         account.setPassword(encodedPassword);
         accountRepository.save(account);
-        return "创建用户成功";
+        return "注册成功";
     }
 
     @Override

@@ -39,6 +39,8 @@ public class Product {
 //    @Column(name = "stockpile")
 //    @JsonIgnore
 //    private Stockpile stockpile;
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Stockpile stockpile;
 
 
 }

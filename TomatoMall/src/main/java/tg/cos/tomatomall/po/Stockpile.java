@@ -20,6 +20,7 @@ public class Stockpile {
     @Column(name = "frozen", nullable = false)
     private Integer frozen;
 
-    @Column(name = "product_id", nullable = false)
-    private Integer productId;
+    @OneToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 }

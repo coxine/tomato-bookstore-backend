@@ -34,7 +34,7 @@ public class AccountController {
     @PostMapping()
     public Response<?> createUser(@RequestBody AccountDTO accountDTO) {
         String result = accountService.createUser(accountDTO);
-        if ("创建用户成功".equals(result)) {
+        if ("注册成功".equals(result)) {
             return Response.buildSuccess(result);
         }
         return Response.buildFailure(result,"400");

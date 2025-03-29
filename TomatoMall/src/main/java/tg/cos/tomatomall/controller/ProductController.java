@@ -6,6 +6,7 @@ import tg.cos.tomatomall.service.ProductService;
 import tg.cos.tomatomall.dto.ProductDTO;
 import tg.cos.tomatomall.vo.Response;
 import tg.cos.tomatomall.dto.StockpileDTO;
+import tg.cos.tomatomall.vo.StockPileUpdateVO;
 
 @RestController
 @RequestMapping("/api/products")
@@ -26,12 +27,12 @@ public class ProductController {
      * 获取指定商品信息
      */
     @GetMapping("/{id}")
-    public Response<?> getProductById(@PathVariable Integer id) {
+    public Response<?> getProductById(@PathVariable("id") Integer id) {
         ProductDTO product = productService.getProductById(id);
         if (product != null) {
             return Response.buildSuccess(product);
         }
-        return Response.buildFailure("商品不存在", "404");
+        return Response.buildFailure("商品不存在", "400");
     }
 
     /**
@@ -51,11 +52,11 @@ public class ProductController {
      */
     @PutMapping
     public Response<?> updateProduct(@RequestBody ProductDTO productDTO) {
-        ProductDTO updatedProduct = productService.updateProduct(productDTO);
-        if (updatedProduct != null) {
-            return Response.buildSuccess(updatedProduct);
+        String msg = productService.updateProduct(productDTO);
+        if (msg.equals("更新成功")) {
+            return Response.buildSuccess(msg);
         }
-        return Response.buildFailure("更新商品信息失败", "400");
+        return Response.buildFailure("商品不存在", "400");
     }
 
     /**
@@ -64,7 +65,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public Response<?> deleteProduct(@PathVariable("id") Integer id) {
         productService.deleteProduct(id);
-        return Response.buildSuccess("删除商品成功");
+        return Response.buildSuccess("删除成功");
     }
 
     /**
@@ -73,12 +74,12 @@ public class ProductController {
     @PatchMapping("/stockpile/{productId}")
     public Response<?> updateStockpile(
             @PathVariable("productId") Integer productId,
-            @RequestParam("amount") Integer amount) {
-        StockpileDTO stockpile = productService.updateStockpile(productId, amount);
-        if (stockpile != null) {
-            return Response.buildSuccess(stockpile);
+            @RequestBody StockPileUpdateVO amount) {
+        String msg = productService.updateStockpile(productId, amount);
+        if (msg.equals("调整库存成功")) {
+            return Response.buildSuccess(msg);
         }
-        return Response.buildFailure("调整库存失败", "400");
+        return Response.buildFailure("商品不存在", "400");
     }
 
     /**
@@ -90,6 +91,6 @@ public class ProductController {
         if (stockpile != null) {
             return Response.buildSuccess(stockpile);
         }
-        return Response.buildFailure("商品库存不存在", "404");
+        return Response.buildFailure("商品不存在", "404");
     }
 }

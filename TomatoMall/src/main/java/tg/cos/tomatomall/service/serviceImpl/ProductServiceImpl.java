@@ -10,8 +10,11 @@ import tg.cos.tomatomall.dto.StockpileDTO;
 import tg.cos.tomatomall.po.*;
 import tg.cos.tomatomall.repository.*;
 import tg.cos.tomatomall.service.ProductService;
+import tg.cos.tomatomall.vo.StockPileUpdateVO;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
 
         // Create stockpile
         Stockpile stockpile = new Stockpile();
-        stockpile.setProductId(savedProduct.getId());
+        stockpile.setProduct(savedProduct);
         stockpile.setAmount(0);
         stockpile.setFrozen(0);
         stockpileRepository.save(stockpile);
@@ -70,33 +73,70 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO updateProduct(ProductDTO productDTO) {
-        return productRepository.findById(productDTO.getId())
-                .map(existingProduct -> {
-                    // Update product
-                    BeanUtils.copyProperties(productDTO, existingProduct, "id");
-                    Product updatedProduct = productRepository.save(existingProduct);
-
-                    // Update specifications
-                    if (productDTO.getSpecifications() != null) {
-                        // Delete existing specifications
-                        specificationRepository.deleteByProductId(updatedProduct.getId());
-
-                        // Save new specifications
-                        Set<Specification> specifications = productDTO.getSpecifications().stream()
-                                .map(specVO -> {
-                                    Specification spec = new Specification();
-                                    BeanUtils.copyProperties(specVO, spec);
-                                    spec.setProduct(updatedProduct);
-                                    return spec;
-                                })
-                                .collect(Collectors.toSet());
-                        specificationRepository.saveAll(specifications);
-                    }
-
-                    return convertToProductVO(updatedProduct);
-                })
-                .orElse(null);
+    public String updateProduct(ProductDTO productDTO) {
+//        return productRepository.findById(productDTO.getId())
+//                .map(existingProduct -> {
+//                    // Update product
+//                    BeanUtils.copyProperties(productDTO, existingProduct, "id");
+//                    Product updatedProduct = productRepository.save(existingProduct);
+//
+//                    // Update specifications
+//                    if (productDTO.getSpecifications() != null) {
+//                        // Delete existing specifications
+//                        specificationRepository.deleteByProductId(updatedProduct.getId());
+//
+//                        // Save new specifications
+//                        Set<Specification> specifications = productDTO.getSpecifications().stream()
+//                                .map(specVO -> {
+//                                    Specification spec = new Specification();
+//                                    BeanUtils.copyProperties(specVO, spec);
+//                                    spec.setProduct(updatedProduct);
+//                                    return spec;
+//                                })
+//                                .collect(Collectors.toSet());
+//                        specificationRepository.saveAll(specifications);
+//                    }
+//
+//                    return convertToProductVO(updatedProduct);
+//                })
+//                .orElse(null);
+        Product product;
+        Optional<Product> optionalProduct = productRepository.findById(productDTO.getId());
+        if (optionalProduct.isPresent()) {
+            product = optionalProduct.get();
+        }else {
+            return "商品不存在";
+        }
+        if (productDTO.getSpecifications() != null) {
+            Set<Specification> specifications = new HashSet<>();
+            for (SpecificationDTO specDTO : productDTO.getSpecifications()) {
+                specifications.add(specDTO.toPO());
+            }
+            product.setSpecifications(specifications);
+        }
+        if (productDTO.getStockpile() != null) {
+            product.setStockpile(productDTO.getStockpile().toPO());
+        }
+        if (productDTO.getCover() != null) {
+            product.setCover(productDTO.getCover());
+        }
+        if (productDTO.getPrice() != null) {
+            product.setPrice(productDTO.getPrice());
+        }
+        if (productDTO.getRate() != null) {
+            product.setRate(productDTO.getRate());
+        }
+        if (productDTO.getDetail() != null) {
+            product.setDetail(productDTO.getDetail());
+        }
+        if (productDTO.getTitle() != null) {
+            product.setTitle(productDTO.getTitle());
+        }
+        if (productDTO.getDescription() != null) {
+            product.setDescription(productDTO.getDescription());
+        }
+        productRepository.save(product);
+        return "更新成功";
     }
 
     @Override
@@ -112,14 +152,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public StockpileDTO updateStockpile(Integer productId, Integer amount) {
-        return stockpileRepository.findByProductId(productId)
+    public String updateStockpile(Integer productId, StockPileUpdateVO amount) {
+        stockpileRepository.findByProductId(productId)
                 .map(stockpile -> {
-                    stockpile.setAmount(amount);
+                    stockpile.setAmount(amount.getAmount());
                     Stockpile updated = stockpileRepository.save(stockpile);
                     return convertToStockpileVO(updated);
-                })
-                .orElse(null);
+                });
+        return "调整库存成功";
     }
 
     @Override
