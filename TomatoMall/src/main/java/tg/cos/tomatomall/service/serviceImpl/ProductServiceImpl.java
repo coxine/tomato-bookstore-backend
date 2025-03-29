@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
                     .map(specVO -> {
                         Specification spec = new Specification();
                         BeanUtils.copyProperties(specVO, spec);
-                        spec.setProductId(savedProduct.getId());
+                        spec.setProduct(savedProduct);
                         return spec;
                     })
                     .collect(Collectors.toSet());
@@ -86,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
                                 .map(specVO -> {
                                     Specification spec = new Specification();
                                     BeanUtils.copyProperties(specVO, spec);
-                                    spec.setProductId(updatedProduct.getId());
+                                    spec.setProduct(updatedProduct);
                                     return spec;
                                 })
                                 .collect(Collectors.toSet());
