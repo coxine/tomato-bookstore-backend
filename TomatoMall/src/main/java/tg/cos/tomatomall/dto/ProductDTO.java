@@ -5,6 +5,7 @@ import lombok.Setter;
 import tg.cos.tomatomall.po.Product;
 import tg.cos.tomatomall.po.Specification;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 public class ProductDTO {
     private Integer id;
     private String title;
-    private Double price;
+    private BigDecimal price;
     private Float rate;
     private String description;
     private String cover;
