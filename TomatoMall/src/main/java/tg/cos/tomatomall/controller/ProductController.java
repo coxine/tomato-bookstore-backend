@@ -3,9 +3,9 @@ package tg.cos.tomatomall.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tg.cos.tomatomall.service.ProductService;
-import tg.cos.tomatomall.vo.ProductVO;
+import tg.cos.tomatomall.dto.ProductDTO;
 import tg.cos.tomatomall.vo.Response;
-import tg.cos.tomatomall.vo.StockpileVO;
+import tg.cos.tomatomall.dto.StockpileDTO;
 
 @RestController
 @RequestMapping("/api/products")
@@ -27,7 +27,7 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     public Response<?> getProductById(@PathVariable Integer id) {
-        ProductVO product = productService.getProductById(id);
+        ProductDTO product = productService.getProductById(id);
         if (product != null) {
             return Response.buildSuccess(product);
         }
@@ -38,8 +38,8 @@ public class ProductController {
      * 创建商品
      */
     @PostMapping
-    public Response<?> createProduct(@RequestBody ProductVO productVO) {
-        ProductVO createdProduct = productService.createProduct(productVO);
+    public Response<?> createProduct(@RequestBody ProductDTO productDTO) {
+        ProductDTO createdProduct = productService.createProduct(productDTO);
         if (createdProduct != null) {
             return Response.buildSuccess(createdProduct);
         }
@@ -50,8 +50,8 @@ public class ProductController {
      * 更新商品信息
      */
     @PutMapping
-    public Response<?> updateProduct(@RequestBody ProductVO productVO) {
-        ProductVO updatedProduct = productService.updateProduct(productVO);
+    public Response<?> updateProduct(@RequestBody ProductDTO productDTO) {
+        ProductDTO updatedProduct = productService.updateProduct(productDTO);
         if (updatedProduct != null) {
             return Response.buildSuccess(updatedProduct);
         }
@@ -74,7 +74,7 @@ public class ProductController {
     public Response<?> updateStockpile(
             @PathVariable("productId") Integer productId,
             @RequestParam("amount") Integer amount) {
-        StockpileVO stockpile = productService.updateStockpile(productId, amount);
+        StockpileDTO stockpile = productService.updateStockpile(productId, amount);
         if (stockpile != null) {
             return Response.buildSuccess(stockpile);
         }
@@ -86,7 +86,7 @@ public class ProductController {
      */
     @GetMapping("/stockpile/{productId}")
     public Response<?> getStockpile(@PathVariable("productId") Integer productId) {
-        StockpileVO stockpile = productService.getStockpile(productId);
+        StockpileDTO stockpile = productService.getStockpile(productId);
         if (stockpile != null) {
             return Response.buildSuccess(stockpile);
         }

@@ -1,11 +1,11 @@
-package tg.cos.tomatomall.vo;
+package tg.cos.tomatomall.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class StockpileVO {
+public class StockpileDTO {
     private Integer id;
     private Integer productId;
     private Integer amount;

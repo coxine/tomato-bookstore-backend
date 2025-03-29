@@ -1,14 +1,15 @@
-package tg.cos.tomatomall.vo;
+package tg.cos.tomatomall.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tg.cos.tomatomall.po.Account;
+import tg.cos.tomatomall.vo.AccountGetDetailsVO;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class AccountVO {
+public class AccountDTO {
     private Integer id;
     private String username;
     private String name;
@@ -19,7 +20,7 @@ public class AccountVO {
     private String email;
     private String location;
 
-    public Account toAccount() {
+    public Account toPO() {
         Account account = new Account();
         if (id != null) {
             account.setId(id);
@@ -41,5 +42,25 @@ public class AccountVO {
             account.setLocation(location);
         }
         return account;
+    }
+
+    public AccountGetDetailsVO toGetDetailsVO() {
+        AccountGetDetailsVO accountGetDetailsVO = new AccountGetDetailsVO();
+        accountGetDetailsVO.setUsername(username);
+        accountGetDetailsVO.setName(name);
+        accountGetDetailsVO.setRole(role);
+        if (avatar != null) {
+            accountGetDetailsVO.setAvatar(avatar);
+        }
+        if (telephone != null) {
+            accountGetDetailsVO.setTelephone(telephone);
+        }
+        if (email != null) {
+            accountGetDetailsVO.setEmail(email);
+        }
+        if (location != null) {
+            accountGetDetailsVO.setLocation(location);
+        }
+        return accountGetDetailsVO;
     }
 }

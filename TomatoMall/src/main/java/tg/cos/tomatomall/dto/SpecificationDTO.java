@@ -1,11 +1,11 @@
-package tg.cos.tomatomall.vo;
+package tg.cos.tomatomall.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class SpecificationVO {
+public class SpecificationDTO {
     private Integer id;
     private String item;
     private String value;

@@ -1,4 +1,4 @@
-package tg.cos.tomatomall.vo;
+package tg.cos.tomatomall.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class ProductVO {
+public class ProductDTO {
     private Integer id;
     private String title;
     private Double price;
@@ -15,6 +15,6 @@ public class ProductVO {
     private String description;
     private String cover;
     private String detail;
-    private Set<SpecificationVO> specifications;
-    private StockpileVO stockpile;
+    private Set<SpecificationDTO> specifications;
+    private StockpileDTO stockpile;
 }

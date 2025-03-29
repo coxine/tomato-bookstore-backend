@@ -3,7 +3,8 @@ package tg.cos.tomatomall.controller;
 import org.springframework.web.bind.annotation.*;
 
 import tg.cos.tomatomall.service.AccountService;
-import tg.cos.tomatomall.vo.AccountVO;
+import tg.cos.tomatomall.dto.AccountDTO;
+import tg.cos.tomatomall.vo.AccountGetDetailsVO;
 import tg.cos.tomatomall.vo.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ public class AccountController {
      */
     @GetMapping("/{username}")
     public Response<?> getUser(@PathVariable("username") String username) {
-        AccountVO accountVO = accountService.getUserDetails(username);
-        if (accountVO != null) {
-            return Response.buildSuccess(accountVO);
+        AccountGetDetailsVO accountGetDetailsVO = accountService.getUserDetails(username);
+        if (accountGetDetailsVO != null) {
+            return Response.buildSuccess(accountGetDetailsVO);
         }
         return Response.buildFailure("用户不存在","400");
     }
@@ -31,8 +32,8 @@ public class AccountController {
      * 创建新的用户
      */
     @PostMapping()
-    public Response<?> createUser(@RequestBody AccountVO accountVO) {
-        String result = accountService.createUser(accountVO);
+    public Response<?> createUser(@RequestBody AccountDTO accountDTO) {
+        String result = accountService.createUser(accountDTO);
         if ("创建用户成功".equals(result)) {
             return Response.buildSuccess(result);
         }
@@ -43,9 +44,9 @@ public class AccountController {
      * 更新用户信息
      */
     @PutMapping()
-    public Response<?> updateUser(@RequestBody AccountVO accountVO) {
+    public Response<?> updateUser(@RequestBody AccountDTO accountDTO) {
 
-        String result = accountService.updateUser(accountVO);
+        String result = accountService.updateUser(accountDTO);
         if ("用户信息更新成功".equals(result)) {
             return Response.buildSuccess(result);
         }
@@ -57,8 +58,8 @@ public class AccountController {
      * 登录
      */
     @PostMapping("/login")
-    public Response<?> login(@RequestBody AccountVO accountVO) {
-        String result = accountService.login(accountVO.getUsername(), accountVO.getPassword());
+    public Response<?> login(@RequestBody AccountDTO accountDTO) {
+        String result = accountService.login(accountDTO.getUsername(), accountDTO.getPassword());
         if (!"用户不存在/用户密码错误".equals(result)) {
             return Response.buildSuccess(result);
         }

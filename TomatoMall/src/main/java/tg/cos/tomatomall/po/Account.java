@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tg.cos.tomatomall.vo.AccountVO;
+import tg.cos.tomatomall.dto.AccountDTO;
 
 @Getter
 @Setter
@@ -41,8 +41,8 @@ public class Account {
     @Column(name = "location")
     private String location;
 
-    public AccountVO toVO() {
-        AccountVO vo = new AccountVO();
+    public AccountDTO toDTO() {
+        AccountDTO vo = new AccountDTO();
         vo.setId(id);
         vo.setUsername(username);
         vo.setPassword(password);
