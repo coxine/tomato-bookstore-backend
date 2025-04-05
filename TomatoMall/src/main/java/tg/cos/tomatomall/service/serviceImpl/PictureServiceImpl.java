@@ -34,8 +34,9 @@ public class PictureServiceImpl implements PictureService {
             if (originalFilename != null && originalFilename.lastIndexOf('.') != -1) {
                 extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
             }
-            String logoFileName = UUID.randomUUID().toString() + extension;
-            return ossUtil.upload(file.getOriginalFilename(),file.getInputStream());
+            String accountAvatarFileName = UUID.randomUUID().toString() + extension;
+
+            return ossUtil.upload(accountAvatarFileName,file.getInputStream());
         }catch (Exception e){
             e.printStackTrace();
             throw TomatoMallException.fileUploadFail();
