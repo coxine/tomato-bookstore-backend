@@ -11,6 +11,7 @@ import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.Response;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class PictureServiceImpl implements PictureService {
@@ -28,6 +29,12 @@ public class PictureServiceImpl implements PictureService {
             if (account.getLatestAvatarChangeTime() != null && date.getTime() - account.getLatestAvatarChangeTime().getTime() < 604800000){
                 return "头像更新时间小于一周,请耐心等待";
             }
+            String originalFilename = file.getOriginalFilename();
+            String extension = "";
+            if (originalFilename != null && originalFilename.lastIndexOf('.') != -1) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+            }
+            String logoFileName = UUID.randomUUID().toString() + extension;
             return ossUtil.upload(file.getOriginalFilename(),file.getInputStream());
         }catch (Exception e){
             e.printStackTrace();
