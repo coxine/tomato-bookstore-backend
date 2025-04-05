@@ -17,7 +17,7 @@ public class PictureController {
     private PictureService pictureService;
 
     @PostMapping("/images")
-    public Response<?> upload(@RequestParam MultipartFile file) throws Exception {
+    public Response<?> upload(@RequestParam("file") MultipartFile file) throws Exception {
         return Response.buildSuccess(pictureService.upload(file));
     }
 }
