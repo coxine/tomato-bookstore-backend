@@ -79,7 +79,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String updateUser(AccountDTO accountDTO) {
 //        System.out.println("approach impl");
-//        Account account=securityUtil.getCurrentUser();
+        Account accountFromToken=securityUtil.getCurrentUser();
         if (containsInvalidCharacters(accountDTO.getUsername())) {
             return "输入不合法";
         }
@@ -89,6 +89,9 @@ public class AccountServiceImpl implements AccountService {
             account = accountOptional.get();
         }else {
             return "用户不存在";
+        }
+        if (!accountDTO.getUsername().equals(accountFromToken.getUsername())) {
+            return "token与输入的用户名不匹配";
         }
         // 只更新非空字段
 //            if (accountDTO.getUsername() != null) account.setUsername(accountDTO.getUsername());
