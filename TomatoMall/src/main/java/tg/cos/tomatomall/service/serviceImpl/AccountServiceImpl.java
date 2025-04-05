@@ -14,6 +14,9 @@ import tg.cos.tomatomall.util.TokenUtil;
 import java.util.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import tg.cos.tomatomall.vo.AccountGetDetailsVO;
+import java.util.regex.Pattern;
+
+
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -27,8 +30,16 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     SecurityUtil securityUtil;
-    @Override
 
+    public boolean containsInvalidCharacters(String input) {
+        // 定义允许的字符集正则表达式
+        String allowedPattern = "^[a-zA-Z0-9!@#$%^&*()\\-_+=]*$";
+
+        // 如果字符串不匹配允许的模式，则包含非法字符
+        return !Pattern.matches(allowedPattern, input);
+    }
+
+    @Override
     public AccountGetDetailsVO getUserDetails(String username) {
         Optional<Account> accountOptional = accountRepository.findByUsername(username);
         if (accountOptional.isPresent()) {
@@ -41,6 +52,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String createUser(AccountDTO accountDTO) {
+        if (containsInvalidCharacters(accountDTO.getUsername()) || containsInvalidCharacters(accountDTO.getPassword())) {
+            return "输入不合法";
+        }
         if (accountRepository.existsByUsername(accountDTO.getUsername())) {
             return "用户名已存在";
         }
@@ -64,6 +78,9 @@ public class AccountServiceImpl implements AccountService {
     public String updateUser(AccountDTO accountDTO) {
 //        System.out.println("approach impl");
 //        Account account=securityUtil.getCurrentUser();
+        if (containsInvalidCharacters(accountDTO.getUsername()) || containsInvalidCharacters(accountDTO.getPassword())) {
+            return "输入不合法";
+        }
         Account account;
         Optional<Account> accountOptional = accountRepository.findByUsername(accountDTO.getUsername());
         if (accountOptional.isPresent()) {
