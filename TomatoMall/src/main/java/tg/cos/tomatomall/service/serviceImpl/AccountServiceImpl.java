@@ -78,7 +78,7 @@ public class AccountServiceImpl implements AccountService {
     public String updateUser(AccountDTO accountDTO) {
 //        System.out.println("approach impl");
 //        Account account=securityUtil.getCurrentUser();
-        if (containsInvalidCharacters(accountDTO.getUsername()) || containsInvalidCharacters(accountDTO.getPassword())) {
+        if (containsInvalidCharacters(accountDTO.getUsername())) {
             return "输入不合法";
         }
         Account account;
@@ -92,6 +92,9 @@ public class AccountServiceImpl implements AccountService {
 //            if (accountDTO.getUsername() != null) account.setUsername(accountDTO.getUsername());
         if (accountDTO.getPassword() != null)
         {
+            if (containsInvalidCharacters(accountDTO.getPassword())) {
+                return "输入不合法";
+            }
             String encodedPassword = passwordEncoder.encode(accountDTO.getPassword());
             account.setPassword(encodedPassword);
         }
