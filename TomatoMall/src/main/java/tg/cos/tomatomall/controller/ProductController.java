@@ -64,8 +64,13 @@ public class ProductController {
      */
     @DeleteMapping("/{id}")
     public Response<?> deleteProduct(@PathVariable("id") Integer id) {
-        productService.deleteProduct(id);
-        return Response.buildSuccess("删除成功");
+        String res = productService.deleteProduct(id);
+        if (res.equals("删除成功")){
+            return Response.buildSuccess("删除成功");
+
+        }else {
+            return Response.buildFailure(res,"400");
+        }
     }
 
     /**

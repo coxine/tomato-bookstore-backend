@@ -1,0 +1,50 @@
+package tg.cos.tomatomall.controller;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import tg.cos.tomatomall.service.CartService;
+import tg.cos.tomatomall.vo.CartAddItemVO;
+import tg.cos.tomatomall.vo.Response;
+
+@RestController
+@RequestMapping("/api/cart")
+public class CartController {
+    @Autowired
+    private CartService cartService;
+
+    @PostMapping
+    public Response<?> addItem(@RequestBody CartAddItemVO cartAddItemVO) {
+        CartAddItemVO res =  cartService.addItem(cartAddItemVO);
+        if (res != null) {
+            return Response.buildSuccess(res);
+        }else {
+            return Response.buildFailure("加入失败","400");
+        }
+    }
+
+    @DeleteMapping("/{cartItemId}")
+    public Response<?> deleteItem(@PathVariable("cartItemId") int cartItemId) {
+        String res =  cartService.deleteItem(cartItemId);
+        if (res.equals("删除成功")){
+            return Response.buildSuccess(res);
+        }else {
+            return Response.buildFailure(res,"400");
+        }
+    }
+
+    @PatchMapping("/{cartItemId}")
+    public Response<?> updateItem(@PathVariable("cartItemId") Integer cartItemId, @RequestBody CartAddItemVO cartAddItemVO) {
+        String res =  cartService.updateItem(cartItemId,cartAddItemVO);
+        if (res.equals("修改数量成功")){
+            return Response.buildSuccess(res);
+        }else {
+            return Response.buildFailure(res,"400");
+        }
+    }
+
+    @GetMapping()
+    public Response<?> getList() {
+        return Response.buildSuccess(cartService.getList());
+    }
+}

@@ -8,6 +8,7 @@ import lombok.Setter;
 import tg.cos.tomatomall.dto.AccountDTO;
 
 import java.util.Date;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -55,6 +56,12 @@ public class Account {
     @Basic
     @Column(name = "latest_avatar_change_time")
     private Date latestAvatarChangeTime;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<CartItem> cartItems;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Order> orders;
 
     public AccountDTO toDTO() {
         AccountDTO vo = new AccountDTO();

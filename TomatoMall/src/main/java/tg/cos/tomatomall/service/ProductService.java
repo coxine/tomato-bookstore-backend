@@ -11,7 +11,7 @@ public interface ProductService {
     ProductDTO getProductById(Integer id);
     ProductDTO createProduct(ProductDTO productDTO);
     String updateProduct(ProductDTO productDTO);
-    void deleteProduct(Integer id);
+    String deleteProduct(Integer id);
     String updateStockpile(Integer productId, StockPileUpdateVO amount);
     StockpileDTO getStockpile(Integer productId);
 }

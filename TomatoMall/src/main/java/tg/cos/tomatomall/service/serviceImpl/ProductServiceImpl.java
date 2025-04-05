@@ -141,13 +141,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void deleteProduct(Integer id) {
+    public String deleteProduct(Integer id) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (!optionalProduct.isPresent()) {
+            return "商品不存在";
+        }
         // Delete specifications first
         specificationRepository.deleteByProductId(id);
         // Delete stockpile
         stockpileRepository.deleteByProductId(id);
         // Delete product
         productRepository.deleteById(id);
+        return "删除成功";
     }
 
     @Override
