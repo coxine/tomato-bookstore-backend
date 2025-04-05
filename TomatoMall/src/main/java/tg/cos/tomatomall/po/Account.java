@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tg.cos.tomatomall.dto.AccountDTO;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -49,6 +51,10 @@ public class Account {
     @Column(name = "location", length = 255)
     @Size(max = 255)
     private String location;
+
+    @Basic
+    @Column(name = "latest_avatar_change_time")
+    private Date latestAvatarChangeTime;
 
     public AccountDTO toDTO() {
         AccountDTO vo = new AccountDTO();

@@ -16,8 +16,12 @@ public class PictureController {
     @Autowired
     private PictureService pictureService;
 
-    @PostMapping("/images")
-    public Response<?> upload(@RequestParam("file") MultipartFile file) throws Exception {
-        return Response.buildSuccess(pictureService.upload(file));
+    @PostMapping("/account")
+    public Response<?> uploadAccountAvatar(@RequestParam("file") MultipartFile file) throws Exception {
+        String res = pictureService.uploadAccountAvatar(file);
+        if (res.equals("头像更新时间小于一周,请耐心等待")){
+            return Response.buildFailure(res,"400");
+        }
+        return Response.buildSuccess(res);
     }
 }

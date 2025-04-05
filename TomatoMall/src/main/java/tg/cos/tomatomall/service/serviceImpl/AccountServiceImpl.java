@@ -11,6 +11,7 @@ import tg.cos.tomatomall.dto.AccountDTO;
 import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.util.TokenUtil;
 
+import java.util.Date;
 import java.util.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import tg.cos.tomatomall.vo.AccountGetDetailsVO;
@@ -61,6 +62,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountDTO.toPO();
         String encodedPassword = passwordEncoder.encode(accountDTO.getPassword());
         account.setPassword(encodedPassword);
+        account.setLatestAvatarChangeTime(new Date());
         accountRepository.save(account);
         return "注册成功";
     }
@@ -99,7 +101,10 @@ public class AccountServiceImpl implements AccountService {
             account.setPassword(encodedPassword);
         }
         if (accountDTO.getName() != null) account.setName(accountDTO.getName());
-        if (accountDTO.getAvatar() != null) account.setAvatar(accountDTO.getAvatar());
+        if (accountDTO.getAvatar() != null) {
+            account.setAvatar(accountDTO.getAvatar());
+            account.setLatestAvatarChangeTime(new Date());
+        }
         if (accountDTO.getTelephone() != null) account.setTelephone(accountDTO.getTelephone());
         if (accountDTO.getEmail() != null) account.setEmail(accountDTO.getEmail());
         if (accountDTO.getLocation() != null) account.setLocation(accountDTO.getLocation());
