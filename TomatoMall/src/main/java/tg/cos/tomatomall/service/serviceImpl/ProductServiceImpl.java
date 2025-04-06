@@ -2,6 +2,7 @@ package tg.cos.tomatomall.service.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tg.cos.tomatomall.dto.ProductDTO;
@@ -10,6 +11,7 @@ import tg.cos.tomatomall.dto.StockpileDTO;
 import tg.cos.tomatomall.po.*;
 import tg.cos.tomatomall.repository.*;
 import tg.cos.tomatomall.service.ProductService;
+import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.StockPileUpdateVO;
 
 import java.util.HashSet;
@@ -25,6 +27,9 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final SpecificationRepository specificationRepository;
     private final StockpileRepository stockpileRepository;
+
+    @Autowired
+    SecurityUtil securityUtil;
 
     @Override
     public List<ProductDTO> getAllProducts() {
@@ -43,6 +48,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDTO createProduct(ProductDTO productDTO) {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().toUpperCase().equals("ADMIN")) {
+            return null;
+        }
         // Save product
         Product product = new Product();
         BeanUtils.copyProperties(productDTO, product);
@@ -74,6 +83,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public String updateProduct(ProductDTO productDTO) {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().toUpperCase().equals("ADMIN")) {
+            return "需要管理员权限";
+        }
 //        return productRepository.findById(productDTO.getId())
 //                .map(existingProduct -> {
 //                    // Update product
@@ -142,6 +155,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public String deleteProduct(Integer id) {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().toUpperCase().equals("ADMIN")) {
+            return "需要管理员权限";
+        }
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (!optionalProduct.isPresent()) {
             return "商品不存在";
@@ -158,6 +175,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public String updateStockpile(Integer productId, StockPileUpdateVO amount) {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().toUpperCase().equals("ADMIN")) {
+            return "需要管理员权限";
+        }
         stockpileRepository.findByProductId(productId)
                 .map(stockpile -> {
                     stockpile.setAmount(amount.getAmount());

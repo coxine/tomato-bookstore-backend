@@ -59,6 +59,10 @@ public class AccountServiceImpl implements AccountService {
         if (accountRepository.existsByUsername(accountDTO.getUsername())) {
             return "用户名已存在";
         }
+        accountDTO.setRole(accountDTO.getRole().toUpperCase());
+        if (!accountDTO.getRole().equals("ADMIN") && !accountDTO.getRole().equals("USER")) {
+            return "输入不合法";
+        }
         Account account = accountDTO.toPO();
         String encodedPassword = passwordEncoder.encode(accountDTO.getPassword());
         account.setPassword(encodedPassword);
