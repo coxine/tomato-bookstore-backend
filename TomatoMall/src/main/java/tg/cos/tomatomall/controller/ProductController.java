@@ -84,7 +84,7 @@ public class ProductController {
         if (msg.equals("调整库存成功")) {
             return Response.buildSuccess(msg);
         }
-        return Response.buildFailure("商品不存在", "400");
+        return Response.buildFailure(msg, "400");
     }
 
     /**
