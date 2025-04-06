@@ -21,6 +21,7 @@ public class AccountController {
      */
     @GetMapping("/{username}")
     public Response<?> getUser(@PathVariable("username") String username) {
+
         AccountGetDetailsVO accountGetDetailsVO = accountService.getUserDetails(username);
         if (accountGetDetailsVO != null) {
             return Response.buildSuccess(accountGetDetailsVO);

@@ -15,7 +15,7 @@ public class MyWebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**")  // 拦截所有请求
                 .excludePathPatterns("/api/accounts/login")//对createUser的处理在LoginInterceptor的prehandle中
-                .excludePathPatterns("/")
+//                .excludePathPatterns("/")
                 .order(1);
     }
 }

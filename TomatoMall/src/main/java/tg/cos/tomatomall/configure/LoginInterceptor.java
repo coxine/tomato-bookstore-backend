@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import tg.cos.tomatomall.util.TokenUtil;
 
+import java.io.IOException;
+
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
 
@@ -14,7 +16,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     TokenUtil tokenUtil;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         String uri = request.getRequestURI();
         String method = request.getMethod();
 
@@ -28,7 +30,10 @@ public class LoginInterceptor implements HandlerInterceptor {
             request.getSession().setAttribute("currentUser",tokenUtil.getAccount(token));
             return true;
         }else {
-            throw new RuntimeException("NOT LOGIN!!! Token is invalid");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"code\":401,\"message\":\"NOT LOGIN! Token is invalid\"}");
+            System.err.println("NOT LOGIN!!! Token is invalid");
+            return false;
         }
     }
 
