@@ -14,10 +14,7 @@ import tg.cos.tomatomall.service.ProductService;
 import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.StockPileUpdateVO;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
         // Save product
         Product product = new Product();
         BeanUtils.copyProperties(productDTO, product);
+        product.setLastChangeCover(new Date());
         Product savedProduct = productRepository.save(product);
 
         // Save specifications
@@ -132,6 +130,7 @@ public class ProductServiceImpl implements ProductService {
         }
         if (productDTO.getCover() != null) {
             product.setCover(productDTO.getCover());
+            product.setLastChangeCover(new Date());
         }
         if (productDTO.getPrice() != null) {
             product.setPrice(productDTO.getPrice());

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -40,6 +41,8 @@ public class Product {
     @Column(name = "cover", length = 500)
     @Size(max = 500)
     private String cover;
+    @Column(name = "last_change_cover")
+    private Date lastChangeCover;
     @Column(name = "detail", length = 500)
     @Size(max = 500)
     private String detail;
