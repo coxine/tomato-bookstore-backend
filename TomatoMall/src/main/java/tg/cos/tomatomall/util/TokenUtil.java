@@ -19,14 +19,14 @@ public class TokenUtil {
         return JWT.create()
                 .withAudience(String.valueOf(Account.getId()))
                 .withExpiresAt(date)
-                .sign(Algorithm.HMAC256(Account.getPassword()));
+                .sign(Algorithm.HMAC256(Account.getUsername()));
     }
 
     public boolean verifyToken(String token) {
         try {
             Integer AccountId=Integer.parseInt(JWT.decode(token).getAudience().get(0));
             Account Account= accountRepository.findById(AccountId).get();
-            JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(Account.getPassword())).build();
+            JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(Account.getUsername())).build();
             jwtVerifier.verify(token);
             return true;
         }catch (Exception e){
