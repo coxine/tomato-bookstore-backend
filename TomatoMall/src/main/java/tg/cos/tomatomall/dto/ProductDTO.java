@@ -24,16 +24,26 @@ public class ProductDTO {
 
     public Product toPO(){
         Product product = new Product();
-        product.setId(id);
+        if (id != null && id > 0) {
+            product.setId(id);
+        }
         product.setTitle(title);
         product.setPrice(price);
         product.setRate(rate);
-        product.setDescription(description);
-        product.setCover(cover);
-        product.setDetail(detail);
+        if (description != null) {
+            product.setDescription(description);
+        }
+        if (cover != null) {
+            product.setCover(cover);
+        }
+        if (detail != null) {
+            product.setDetail(detail);
+        }
         Set<Specification> specificationSet = new HashSet<>();
-        for (SpecificationDTO specificationDTO : specifications) {
-            specificationSet.add(specificationDTO.toPO());
+        if (specifications != null) {
+            for (SpecificationDTO specificationDTO : specifications) {
+                specificationSet.add(specificationDTO.toPO());
+            }
         }
         product.setSpecifications(specificationSet);
         return product;
