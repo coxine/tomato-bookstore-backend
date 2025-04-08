@@ -5,9 +5,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import tg.cos.tomatomall.dto.ProductDTO;
+import tg.cos.tomatomall.dto.SpecificationDTO;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -58,4 +61,21 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<CartItem> cartItems;
+
+//    public ProductDTO toDTO(){
+//        ProductDTO product = new ProductDTO();
+//        product.setId(id);
+//        product.setTitle(title);
+//        product.setPrice(price);
+//        product.setRate(rate);
+//        product.setDescription(description);
+//        product.setCover(cover);
+//        product.setDetail(detail);
+//        Set<SpecificationDTO> specificationSet = new HashSet<>();
+//        for (Specification specification : specifications) {
+//            specificationSet.add(specification);
+//        }
+//        product.setSpecifications(specificationSet);
+//        return product;
+//    }
 }

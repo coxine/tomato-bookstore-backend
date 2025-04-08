@@ -12,6 +12,7 @@ import tg.cos.tomatomall.po.*;
 import tg.cos.tomatomall.repository.*;
 import tg.cos.tomatomall.service.ProductService;
 import tg.cos.tomatomall.util.SecurityUtil;
+import tg.cos.tomatomall.vo.ProductVO;
 import tg.cos.tomatomall.vo.StockPileUpdateVO;
 
 import java.util.*;
@@ -29,14 +30,14 @@ public class ProductServiceImpl implements ProductService {
     SecurityUtil securityUtil;
 
     @Override
-    public List<ProductDTO> getAllProducts() {
+    public List<ProductVO> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(this::convertToProductVO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ProductDTO getProductById(Integer id) {
+    public ProductVO getProductById(Integer id) {
         return productRepository.findById(id)
                 .map(this::convertToProductVO)
                 .orElse(null);
@@ -44,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDTO createProduct(ProductDTO productDTO) {
+    public ProductVO createProduct(ProductDTO productDTO) {
         Account account = securityUtil.getCurrentUser();
         if (!account.getRole().toUpperCase().equals("ADMIN")) {
             return null;
@@ -194,8 +195,8 @@ public class ProductServiceImpl implements ProductService {
                 .orElse(null);
     }
 
-    private ProductDTO convertToProductVO(Product product) {
-        ProductDTO vo = new ProductDTO();
+    private ProductVO convertToProductVO(Product product) {
+        ProductVO vo = new ProductVO();
         BeanUtils.copyProperties(product, vo);
 
         // Set specifications
@@ -207,8 +208,8 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // Set stockpile
-        stockpileRepository.findByProductId(product.getId())
-                .ifPresent(stock -> vo.setStockpile(convertToStockpileVO(stock)));
+//        stockpileRepository.findByProductId(product.getId())
+//                .ifPresent(stock -> vo.setStockpile(convertToStockpileVO(stock)));
 
         return vo;
     }

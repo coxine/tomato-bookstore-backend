@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tg.cos.tomatomall.service.ProductService;
 import tg.cos.tomatomall.dto.ProductDTO;
+import tg.cos.tomatomall.vo.ProductVO;
 import tg.cos.tomatomall.vo.Response;
 import tg.cos.tomatomall.dto.StockpileDTO;
 import tg.cos.tomatomall.vo.StockPileUpdateVO;
@@ -28,7 +29,7 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     public Response<?> getProductById(@PathVariable("id") Integer id) {
-        ProductDTO product = productService.getProductById(id);
+        ProductVO product = productService.getProductById(id);
         if (product != null) {
             return Response.buildSuccess(product);
         }
@@ -40,7 +41,7 @@ public class ProductController {
      */
     @PostMapping
     public Response<?> createProduct(@RequestBody ProductDTO productDTO) {
-        ProductDTO createdProduct = productService.createProduct(productDTO);
+        ProductVO createdProduct = productService.createProduct(productDTO);
         if (createdProduct != null) {
             return Response.buildSuccess(createdProduct);
         }

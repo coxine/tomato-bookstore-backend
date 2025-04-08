@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import tg.cos.tomatomall.po.Product;
 import tg.cos.tomatomall.po.Specification;
+import tg.cos.tomatomall.vo.ProductVO;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -45,6 +46,19 @@ public class ProductDTO {
                 specificationSet.add(specificationDTO.toPO());
             }
         }
+        product.setSpecifications(specificationSet);
+        return product;
+    }
+    public ProductVO toVO(){
+        ProductVO product=new ProductVO();
+        product.setId(id);
+        product.setTitle(title);
+        product.setPrice(price);
+        product.setRate(rate);
+        product.setDescription(description);
+        product.setCover(cover);
+        product.setDetail(detail);
+        Set<SpecificationDTO> specificationSet = new HashSet<>(specifications);
         product.setSpecifications(specificationSet);
         return product;
     }
