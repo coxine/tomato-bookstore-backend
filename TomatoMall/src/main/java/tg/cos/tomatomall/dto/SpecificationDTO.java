@@ -12,12 +12,12 @@ public class SpecificationDTO {
     private String value;
     private ProductDTO product;
 
-    public Specification toPO(){
-        Specification spec = new Specification();
-        spec.setId(id);
-        spec.setItem(item);
-        spec.setValue(value);
-        spec.setProduct(product.toPO());
-        return spec;
-    }
+//    public Specification toPO(){
+//        Specification spec = new Specification();
+//        spec.setId(id);
+//        spec.setItem(item);
+//        spec.setValue(value);
+//        spec.setProduct(product.toPO());
+//        return spec;
+//    }
 }

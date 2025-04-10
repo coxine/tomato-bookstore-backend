@@ -12,12 +12,12 @@ public class StockpileDTO {
     private Integer amount;
     private Integer frozen;
 
-    public Stockpile toPO(){
-        Stockpile stockpile = new Stockpile();
-        stockpile.setId(id);
-        stockpile.setProduct(product.toPO());
-        stockpile.setAmount(amount);
-        stockpile.setFrozen(frozen);
-        return stockpile;
-    }
+//    public Stockpile toPO(){
+//        Stockpile stockpile = new Stockpile();
+//        stockpile.setId(id);
+//        stockpile.setProduct(product.toPO());
+//        stockpile.setAmount(amount);
+//        stockpile.setFrozen(frozen);
+//        return stockpile;
+//    }
 }

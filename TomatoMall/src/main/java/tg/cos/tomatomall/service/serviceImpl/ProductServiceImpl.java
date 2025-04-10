@@ -13,6 +13,7 @@ import tg.cos.tomatomall.repository.*;
 import tg.cos.tomatomall.service.ProductService;
 import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.ProductVO;
+import tg.cos.tomatomall.vo.SpecificationVO;
 import tg.cos.tomatomall.vo.StockPileUpdateVO;
 
 import java.util.*;
@@ -33,16 +34,83 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductVO> getAllProducts() {
-        return productRepository.findAll().stream()
-                .map(this::convertToProductVO)
-                .collect(Collectors.toList());
+        List<Product> products = productRepository.findAll();
+        if (products.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<ProductVO> result = new ArrayList<>();
+        for (Product product : products) {
+            ProductVO productVO = new ProductVO();
+            productVO.setId(product.getId());
+            productVO.setTitle(product.getTitle());
+            productVO.setPrice(product.getPrice());
+            productVO.setRate(product.getRate());
+            if (product.getSpecifications() != null) {
+                Set<SpecificationVO> specs = new HashSet<>();
+                for (Specification specification : product.getSpecifications()) {
+                    SpecificationVO specificationVO = new SpecificationVO();
+                    specificationVO.setId(specification.getId());
+                    specificationVO.setProductId(specification.getProduct().getId());
+                    specificationVO.setItem(specification.getItem());
+                    specificationVO.setValue(specification.getValue());
+                    specs.add(specificationVO);
+                }
+                productVO.setSpecifications(specs);
+            }
+            if (product.getCover() != null) {
+                productVO.setCover(product.getCover());
+            }
+            if (product.getDescription() != null) {
+                productVO.setDescription(product.getDescription());
+            }
+            if (product.getDetail() != null) {
+                productVO.setDetail(product.getDetail());
+            }
+            result.add(productVO);
+        }
+        return result;
+//        return productRepository.findAll().stream()
+//                .map(this::convertToProductVO)
+//                .collect(Collectors.toList());
     }
 
     @Override
     public ProductVO getProductById(Integer id) {
-        return productRepository.findById(id)
-                .map(this::convertToProductVO)
-                .orElse(null);
+        Product product = productRepository.findById(id).orElse(null);
+        if (product == null) {
+            return null;
+        }
+        ProductVO productVO = new ProductVO();
+        productVO.setId(product.getId());
+        productVO.setTitle(product.getTitle());
+        productVO.setPrice(product.getPrice());
+        productVO.setRate(product.getRate());
+        if (product.getSpecifications() != null) {
+            Set<SpecificationVO> specs = new HashSet<>();
+            for (Specification specification : product.getSpecifications()) {
+                SpecificationVO specificationVO = new SpecificationVO();
+                specificationVO.setId(specification.getId());
+                specificationVO.setProductId(specification.getProduct().getId());
+                specificationVO.setItem(specification.getItem());
+                specificationVO.setValue(specification.getValue());
+                specs.add(specificationVO);
+            }
+            productVO.setSpecifications(specs);
+        }
+        if (product.getCover() != null) {
+            productVO.setCover(product.getCover());
+        }
+        if (product.getDescription() != null) {
+            productVO.setDescription(product.getDescription());
+        }
+        if (product.getDetail() != null) {
+            productVO.setDetail(product.getDetail());
+        }
+        return productVO;
+
+//        return productRepository.findById(id)
+//                .map(this::convertToProductVO)
+//                .orElse(null);
     }
 
     @Override
@@ -87,7 +155,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public String updateProduct(ProductDTO productDTO) {
+    public String updateProduct(ProductVO productVO) {
         Account account = securityUtil.getCurrentUser();
         if (!account.getRole().toUpperCase().equals("ADMIN")) {
             return "需要管理员权限";
@@ -119,40 +187,42 @@ public class ProductServiceImpl implements ProductService {
 //                })
 //                .orElse(null);
         Product product;
-        Optional<Product> optionalProduct = productRepository.findById(productDTO.getId());
+        Optional<Product> optionalProduct = productRepository.findById(productVO.getId());
         if (optionalProduct.isPresent()) {
             product = optionalProduct.get();
         }else {
             return "商品不存在";
         }
-        if (productDTO.getSpecifications() != null) {
+        if (productVO.getSpecifications() != null) {
             Set<Specification> specifications = new HashSet<>();
-            for (SpecificationDTO specDTO : productDTO.getSpecifications()) {
-                specifications.add(specDTO.toPO());
+            for (SpecificationVO specVO : productVO.getSpecifications()) {
+                Specification specification = new Specification();
+                specification.setProduct(product);
+                specification.setId(specVO.getId());
+                specification.setItem(specVO.getItem());
+                specification.setValue(specVO.getValue());
+                specifications.add(specification);
             }
             product.setSpecifications(specifications);
         }
-        if (productDTO.getStockpile() != null) {
-            product.setStockpile(productDTO.getStockpile().toPO());
-        }
-        if (productDTO.getCover() != null) {
-            product.setCover(productDTO.getCover());
+        if (productVO.getCover() != null) {
+            product.setCover(productVO.getCover());
             product.setLastChangeCover(new Date());
         }
-        if (productDTO.getPrice() != null) {
-            product.setPrice(productDTO.getPrice());
+        if (productVO.getPrice() != null) {
+            product.setPrice(productVO.getPrice());
         }
-        if (productDTO.getRate() != null) {
-            product.setRate(productDTO.getRate());
+        if (productVO.getRate() != null) {
+            product.setRate(productVO.getRate());
         }
-        if (productDTO.getDetail() != null) {
-            product.setDetail(productDTO.getDetail());
+        if (productVO.getDetail() != null) {
+            product.setDetail(productVO.getDetail());
         }
-        if (productDTO.getTitle() != null) {
-            product.setTitle(productDTO.getTitle());
+        if (productVO.getTitle() != null) {
+            product.setTitle(productVO.getTitle());
         }
-        if (productDTO.getDescription() != null) {
-            product.setDescription(productDTO.getDescription());
+        if (productVO.getDescription() != null) {
+            product.setDescription(productVO.getDescription());
         }
         productRepository.save(product);
         return "更新成功";
@@ -220,8 +290,8 @@ public class ProductServiceImpl implements ProductService {
         return vo;
     }
 
-    private SpecificationDTO convertToSpecificationVO(Specification specification) {
-        SpecificationDTO vo = new SpecificationDTO();
+    private SpecificationVO convertToSpecificationVO(Specification specification) {
+        SpecificationVO vo = new SpecificationVO();
         BeanUtils.copyProperties(specification, vo);
         return vo;
     }

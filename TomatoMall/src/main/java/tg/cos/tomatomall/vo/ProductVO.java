@@ -18,6 +18,6 @@ public class ProductVO {
     private String description;
     private String cover;
     private String detail;
-    private Set<SpecificationDTO> specifications;
+    private Set<SpecificationVO> specifications;
 
 }

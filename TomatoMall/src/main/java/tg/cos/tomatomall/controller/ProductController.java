@@ -52,8 +52,8 @@ public class ProductController {
      * 更新商品信息
      */
     @PutMapping
-    public Response<?> updateProduct(@RequestBody ProductDTO productDTO) {
-        String msg = productService.updateProduct(productDTO);
+    public Response<?> updateProduct(@RequestBody ProductVO productVO) {
+        String msg = productService.updateProduct(productVO);
         if (msg.equals("更新成功")) {
             return Response.buildSuccess(msg);
         }
