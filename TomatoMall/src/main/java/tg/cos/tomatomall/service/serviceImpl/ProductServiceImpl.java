@@ -154,7 +154,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public String updateProduct(ProductVO productVO) {
         Account account = securityUtil.getCurrentUser();
         if (!account.getRole().toUpperCase().equals("ADMIN")) {
@@ -194,12 +193,17 @@ public class ProductServiceImpl implements ProductService {
             return "商品不存在";
         }
         if (productVO.getSpecifications() != null) {
-            Set<Specification> specifications = new HashSet<>();
+            Set<Specification> specifications = product.getSpecifications();
             for (SpecificationVO specVO : productVO.getSpecifications()) {
                 Specification specification = new Specification();
                 specification.setProduct(product);
                 if (specVO.getId() != null) {
                     specification.setId(specVO.getId());
+                    for (Specification specification1: specifications){
+                        if (specification1.getId().equals(specVO.getId())){
+                            specifications.remove(specification1);
+                        }
+                    }
                 }
                 specification.setItem(specVO.getItem());
                 specification.setValue(specVO.getValue());
