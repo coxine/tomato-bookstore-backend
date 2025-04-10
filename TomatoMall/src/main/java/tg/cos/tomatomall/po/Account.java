@@ -8,6 +8,7 @@ import lombok.Setter;
 import tg.cos.tomatomall.dto.AccountDTO;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -62,6 +63,14 @@ public class Account {
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Order> orders;
+
+    @ElementCollection  // 告诉 JPA 这是一个基本类型的集合
+    @CollectionTable(
+            name = "product_cover_creates",  // 存储集合的中间表名
+            joinColumns = @JoinColumn(name = "product_id")  // 关联主表的列
+    )
+    @Column(name = "cover_create_id")  // 集合元素存储的列名
+    private List<Long> uploadProductCoverCreates;
 
     public AccountDTO toDTO() {
         AccountDTO vo = new AccountDTO();

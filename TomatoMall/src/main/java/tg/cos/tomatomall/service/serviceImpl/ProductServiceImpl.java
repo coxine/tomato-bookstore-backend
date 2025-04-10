@@ -28,6 +28,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     SecurityUtil securityUtil;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
     public List<ProductVO> getAllProducts() {
@@ -54,6 +56,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         BeanUtils.copyProperties(productDTO, product);
         product.setLastChangeCover(new Date());
+        if (productDTO.getCover().startsWith("https")) {
+            account.getUploadProductCoverCreates().remove(account.getUploadProductCoverCreates().size()-1);
+        }
+        accountRepository.save(account);
         Product savedProduct = productRepository.save(product);
 
         // Save specifications

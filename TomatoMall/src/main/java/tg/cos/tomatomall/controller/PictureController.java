@@ -31,4 +31,13 @@ public class PictureController {
         }
         return Response.buildSuccess(res);
     }
+
+    @PostMapping("/product")
+    public Response<?> uploadProductCoverCreate(@RequestParam("file") MultipartFile file) throws Exception {
+        String res = pictureService.uploadProductCoverCreate(file);
+        if (!res.startsWith("https:")){
+            return Response.buildFailure(res,"400");
+        }
+        return Response.buildSuccess(res);
+    }
 }
