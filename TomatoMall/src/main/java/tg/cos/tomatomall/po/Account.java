@@ -62,6 +62,9 @@ public class Account {
     private Set<CartItem> cartItems;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<OrderItem> orderItems;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Order> orders;
 
     @ElementCollection  // 告诉 JPA 这是一个基本类型的集合

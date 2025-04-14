@@ -2,19 +2,17 @@ package tg.cos.tomatomall.service.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tg.cos.tomatomall.po.Account;
-import tg.cos.tomatomall.po.CartItem;
-import tg.cos.tomatomall.po.Product;
-import tg.cos.tomatomall.repository.AccountRepository;
-import tg.cos.tomatomall.repository.CartItemRepository;
-import tg.cos.tomatomall.repository.OrderRepository;
-import tg.cos.tomatomall.repository.ProductRepository;
+import tg.cos.tomatomall.po.*;
+import tg.cos.tomatomall.repository.*;
 import tg.cos.tomatomall.service.CartService;
 import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.CartAddItemVO;
+import tg.cos.tomatomall.vo.CartCheckOutInputVO;
+import tg.cos.tomatomall.vo.CartCheckOutOutputVO;
 import tg.cos.tomatomall.vo.CartGetListVO;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -35,6 +33,10 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     SecurityUtil securityUtil;
+    @Autowired
+    private StockpileRepository stockpileRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     @Override
     public CartAddItemVO addItem(CartAddItemVO cartAddItemVO){
@@ -49,7 +51,7 @@ public class CartServiceImpl implements CartService {
             return null;
         }
         int quantity = cartAddItemVO.getQuantity();
-        if (quantity < product.getStockpile().getAmount()){
+        if (quantity > product.getStockpile().getAmount()){
             return null;
         }
         CartItem cartItem = new CartItem();
@@ -147,6 +149,82 @@ public class CartServiceImpl implements CartService {
         result.setTotal(total);
         result.setItems(cartAddItemVOSet);
         result.setTotalAmount(amount);
+        return result;
+    }
+
+    @Override
+    public CartCheckOutOutputVO checkout(CartCheckOutInputVO cartCheckOutInputVO){
+//        System.out.println("进入checkout Service");
+        Account account = securityUtil.getCurrentUser();
+        Order order = new Order();
+        order.setAccount(account);
+        // TODO: 检查paymentMethod是否合法
+        order.setPaymentMethod(cartCheckOutInputVO.getPayment_method());
+        order.setName(cartCheckOutInputVO.getShipping_address().getName());
+        order.setAddress(cartCheckOutInputVO.getShipping_address().getAddress());
+        order.setPhone(cartCheckOutInputVO.getShipping_address().getPhone());
+        Set<CartItem> cartItems = new HashSet<>();
+
+        // 查看购买的商品
+        for (Integer cartItemId : cartCheckOutInputVO.getCartItemIds()) {
+            Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
+            if (cartItemOptional.isEmpty()){
+//                System.out.println("查询不到购物车商品");
+                return null;
+            }
+            CartItem cartItem = cartItemOptional.get();
+            if (cartItem.getAccount().getId() != account.getId()){// 如果购物车中的货物关联的账号和登录的账号不一致
+//                System.out.println("购物者和登陆者身份不一致, 登陆者id为" + account.getId()+",购物者id为"+cartItem.getAccount().getId());
+                return null;
+            }
+            cartItems.add(cartItem);
+        }
+
+        //确认订单已经没有问题了
+//        System.out.println("checkout 检查完毕");
+
+        BigDecimal total = new BigDecimal(0);
+        Set<OrderItem> orderItems = new HashSet<>();
+
+        for (CartItem cartItem : cartItems){
+
+            Product product = cartItem.getProduct();
+
+            total.add(product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+
+            Stockpile stockpile = product.getStockpile();
+            stockpile.setAmount(stockpile.getAmount() - cartItem.getQuantity());
+            stockpile.setFrozen(stockpile.getFrozen() + cartItem.getQuantity());// 冻结库存
+            // TODO: 完成库存的解冻
+            product.setStockpile(stockpile);
+            stockpileRepository.save(stockpile);
+            productRepository.save(product);
+            cartItemRepository.save(cartItem);
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setProduct(product);
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setAccount(account);
+            orderItems.add(orderItem);
+            account.getOrderItems().add(orderItem);
+        }
+
+        order.setOrderItems(orderItems);
+        order.setTotalAmount(total);
+        order.setStatus("PENDING");
+        order.setCreateTime(new Date());
+        orderRepository.save(order);
+        account.getOrders().add(order);
+        accountRepository.save(account);
+        orderItemRepository.saveAll(order.getOrderItems());
+
+        CartCheckOutOutputVO result = new CartCheckOutOutputVO();
+        result.setOrderId(order.getId());
+        result.setUsername(account.getUsername());
+        result.setTotalAmount(total);
+        result.setPaymentMethod(cartCheckOutInputVO.getPayment_method());
+        result.setCreateTime(order.getCreateTime());
+        result.setStatus(order.getStatus());
         return result;
     }
 }

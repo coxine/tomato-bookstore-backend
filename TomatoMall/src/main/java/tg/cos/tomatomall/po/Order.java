@@ -37,5 +37,9 @@ public class Order {
     private Account account;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<CartItem> cartItems;
+    private Set<OrderItem> orderItems;
+
+    private String name;
+    private String address;
+    private String phone;
 }

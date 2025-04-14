@@ -16,3 +16,14 @@ aliyun:
     accessKeyId:
     accessKeySecret:
     bucketName:
+
+
+alipay:
+  app-id:
+  private-key:
+  alipay-public-key:
+  server-url:
+  charset:
+  sign-type:
+  notify-url:
+  return-url:

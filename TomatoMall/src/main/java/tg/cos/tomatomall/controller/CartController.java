@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tg.cos.tomatomall.service.CartService;
 import tg.cos.tomatomall.vo.CartAddItemVO;
+import tg.cos.tomatomall.vo.CartCheckOutInputVO;
+import tg.cos.tomatomall.vo.CartCheckOutOutputVO;
 import tg.cos.tomatomall.vo.Response;
 
 @RestController
@@ -46,5 +48,15 @@ public class CartController {
     @GetMapping()
     public Response<?> getList() {
         return Response.buildSuccess(cartService.getList());
+    }
+
+    @PostMapping("/checkout")
+    public Response<?> checkout(@RequestBody CartCheckOutInputVO cartCheckOutInputVO) {
+        CartCheckOutOutputVO res = cartService.checkout(cartCheckOutInputVO);
+        if (res != null) {
+            return Response.buildSuccess(res);
+        }else {
+            return Response.buildFailure("提交订单失败", "400");
+        }
     }
 }
