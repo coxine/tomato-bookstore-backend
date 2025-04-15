@@ -41,7 +41,13 @@ public class OrdersController {
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()[0]));
 
         // 2. 验证支付宝签名（防止伪造请求）
-        boolean signVerified = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, "UTF-8", "RSA2");
+        boolean signVerified = false;
+        try {
+
+            signVerified = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, "UTF-8", "RSA2");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         if (!signVerified) {
             response.getWriter().print("fail"); // 签名验证失败，返回 fail
             return;
