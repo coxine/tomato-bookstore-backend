@@ -39,6 +39,12 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<OrderItem> orderItems;
 
+    @Column(name = "alipay_trade_no")
+    private String alipayTradeNo;
+
+    @Column(name = "pay_amount")
+    private BigDecimal payAmount;
+
     private String name;
     private String address;
     private String phone;
