@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tg.cos.tomatomall.exception.TomatoMallException;
 import tg.cos.tomatomall.po.Account;
+import tg.cos.tomatomall.po.Advertisement;
 import tg.cos.tomatomall.po.Product;
 import tg.cos.tomatomall.repository.AccountRepository;
+import tg.cos.tomatomall.repository.AdvertisementRepository;
 import tg.cos.tomatomall.repository.ProductRepository;
 import tg.cos.tomatomall.service.PictureService;
 import tg.cos.tomatomall.util.OSSUtil;
@@ -27,6 +29,8 @@ public class PictureServiceImpl implements PictureService {
     ProductRepository productRepository;
     @Autowired
     AccountRepository accountRepository;
+    @Autowired
+    private AdvertisementRepository advertisementRepository;
 
     public String uploadAccountAvatar(MultipartFile file) throws Exception {
         try {
@@ -100,6 +104,71 @@ public class PictureServiceImpl implements PictureService {
                 return "已经传入了太多图片!!!";
             }
             account.getUploadProductCoverCreates().add(date.getTime());
+            accountRepository.save(account);
+
+            String originalFilename = file.getOriginalFilename();
+            String extension = "";
+            if (originalFilename != null && originalFilename.lastIndexOf('.') != -1) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+            }
+            String accountAvatarFileName = UUID.randomUUID().toString() + extension;
+
+            return ossUtil.upload(accountAvatarFileName,file.getInputStream()).replace("http:", "https:");
+        }catch (Exception e){
+            e.printStackTrace();
+            throw TomatoMallException.fileUploadFail();
+        }
+    }
+
+    @Override
+    public String uploadAdvertisementCover(MultipartFile file, Integer id) throws Exception {
+        try {
+            Account account=securityUtil.getCurrentUser();
+            Date date=new Date();
+            if (!account.getRole().toUpperCase().equals("ADMIN")){
+                return "需要管理员身份";
+            }
+            Optional<Advertisement> advertisementOptional=advertisementRepository.findById(id);
+            Advertisement advertisement;
+            if (advertisementOptional.isPresent()){
+                advertisement=advertisementOptional.get();
+            }else {
+                return "不存在该商品";
+            }
+            if (advertisement.getLastImageChangeTime() != null && date.getTime() - advertisement.getLastImageChangeTime().getTime() < 86400000){
+                return "封面更新时间小于一天,请耐心等待";
+            }
+            String originalFilename = file.getOriginalFilename();
+            String extension = "";
+            if (originalFilename != null && originalFilename.lastIndexOf('.') != -1) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+            }
+            String accountAvatarFileName = UUID.randomUUID().toString() + extension;
+
+            return ossUtil.upload(accountAvatarFileName,file.getInputStream()).replace("http:", "https:");
+        }catch (Exception e){
+            e.printStackTrace();
+            throw TomatoMallException.fileUploadFail();
+        }
+    }
+
+    @Override
+    public String uploadAdvertisementCoverCreate(MultipartFile file) throws Exception {
+        try {
+            Account account=securityUtil.getCurrentUser();
+            Date date=new Date();
+            if (!account.getRole().toUpperCase().equals("ADMIN")){
+                return "需要管理员身份";
+            }
+            for (Long time : account.getUploadAdvertisementCoverCreates()){
+                if (date.getTime() - time > 604800000){
+                    account.getUploadAdvertisementCoverCreates().remove(time);
+                }
+            }
+            if (account.getUploadAdvertisementCoverCreates().size() >= 5){
+                return "已经传入了太多图片!!!";
+            }
+            account.getUploadAdvertisementCoverCreates().add(date.getTime());
             accountRepository.save(account);
 
             String originalFilename = file.getOriginalFilename();

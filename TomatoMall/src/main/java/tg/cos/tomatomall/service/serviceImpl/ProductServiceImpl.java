@@ -124,8 +124,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         BeanUtils.copyProperties(productDTO, product);
         product.setLastChangeCover(new Date());
-        if (productDTO.getCover().startsWith("https")) {
-            account.getUploadProductCoverCreates().remove(account.getUploadProductCoverCreates().size()-1);
+        if (productDTO.getCover().startsWith("https") && !account.getUploadProductCoverCreates().isEmpty()) {
+            account.getUploadProductCoverCreates().removeLast();
         }
         accountRepository.save(account);
         Product savedProduct = productRepository.save(product);

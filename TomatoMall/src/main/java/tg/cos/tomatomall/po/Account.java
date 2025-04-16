@@ -75,6 +75,14 @@ public class Account {
     @Column(name = "cover_create_id")  // 集合元素存储的列名
     private List<Long> uploadProductCoverCreates;
 
+    @ElementCollection  // 告诉 JPA 这是一个基本类型的集合
+    @CollectionTable(
+            name = "advertisement_image_creates",  // 存储集合的中间表名
+            joinColumns = @JoinColumn(name = "advertisement_id")  // 关联主表的列
+    )
+    @Column(name = "advertisement_cover_create_id")  // 集合元素存储的列名
+    private List<Long> uploadAdvertisementCoverCreates;
+
     public AccountDTO toDTO() {
         AccountDTO vo = new AccountDTO();
         vo.setId(id);

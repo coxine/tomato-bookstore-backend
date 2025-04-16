@@ -2,11 +2,13 @@ package tg.cos.tomatomall.service.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tg.cos.tomatomall.po.Account;
 import tg.cos.tomatomall.po.Advertisement;
 import tg.cos.tomatomall.po.Product;
 import tg.cos.tomatomall.repository.AdvertisementRepository;
 import tg.cos.tomatomall.repository.ProductRepository;
 import tg.cos.tomatomall.service.AdvertisementService;
+import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.AdvertisementVO;
 
 import java.util.*;
@@ -18,6 +20,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     AdvertisementRepository advertisementRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    SecurityUtil securityUtil;
 
     @Override
     public List<AdvertisementVO> getAll(){
@@ -40,6 +44,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public String update(AdvertisementVO advertisementVO) {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().toUpperCase().equals("ADMIN")) {
+            return "需要管理员权限";
+        }
         Optional<Advertisement> advertisementOptional = advertisementRepository.findById(advertisementVO.getId());
         if (advertisementOptional.isEmpty()){
             return "商品不存在";
@@ -53,6 +61,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         }
         if (advertisementVO.getImgUrl() != null){
             advertisement.setImageUrl(advertisementVO.getImgUrl());
+            advertisement.setLastImageChangeTime(new Date());
         }
         if (advertisementVO.getProductId() != null){
             Optional<Product> productOptional = productRepository.findById(advertisementVO.getProductId());
@@ -68,10 +77,18 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public AdvertisementVO create(AdvertisementVO advertisementVO) {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().toUpperCase().equals("ADMIN")) {
+            return null;
+        }
         Advertisement advertisement = new Advertisement();
         advertisement.setTitle(advertisementVO.getTitle());
         advertisement.setContent(advertisementVO.getContent());
         advertisement.setImageUrl(advertisementVO.getImgUrl());
+        advertisement.setLastImageChangeTime(new Date());
+        if (advertisementVO.getImgUrl().startsWith("https") && !account.getUploadAdvertisementCoverCreates().isEmpty()) {
+            account.getUploadAdvertisementCoverCreates().removeLast();
+        }
         Optional<Product> productOptional = productRepository.findById(advertisementVO.getProductId());
         if (productOptional.isEmpty()){
             return null;
@@ -90,6 +107,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public String delete(Integer id) {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().toUpperCase().equals("ADMIN")) {
+            return null;
+        }
         Optional<Advertisement> advertisementOptional = advertisementRepository.findById(id);
         if (advertisementOptional.isEmpty()){
             return "该商品不存在";

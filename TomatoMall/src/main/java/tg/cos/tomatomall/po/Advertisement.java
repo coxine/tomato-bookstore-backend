@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,4 +30,7 @@ public class Advertisement {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "FK_PRODUCT_ADVERTISEMENT"))
     private Product product;
+
+    @Column(name = "last_image_change_time")
+    private Date lastImageChangeTime;
 }

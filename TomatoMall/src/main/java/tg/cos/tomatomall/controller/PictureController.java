@@ -40,4 +40,23 @@ public class PictureController {
         }
         return Response.buildSuccess(res);
     }
+
+    @PostMapping("/advertisements/{advertisementId}")
+    public Response<?> uploadAdvertisementCover(@RequestParam("file") MultipartFile file,
+                                          @PathVariable("advertisementId") Integer advertisementId) throws Exception {
+        String res = pictureService.uploadAdvertisementCover(file, advertisementId);
+        if (!res.startsWith("https:")){
+            return Response.buildFailure(res,"400");
+        }
+        return Response.buildSuccess(res);
+    }
+
+    @PostMapping("/advertisements")
+    public Response<?> uploadAdvertisementCoverCreate(@RequestParam("file") MultipartFile file) throws Exception {
+        String res = pictureService.uploadAdvertisementCoverCreate(file);
+        if (!res.startsWith("https:")){
+            return Response.buildFailure(res,"400");
+        }
+        return Response.buildSuccess(res);
+    }
 }
