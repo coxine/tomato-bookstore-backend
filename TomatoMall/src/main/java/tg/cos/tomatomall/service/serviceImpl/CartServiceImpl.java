@@ -39,6 +39,42 @@ public class CartServiceImpl implements CartService {
     public CartAddItemVO addItem(CartAddItemVO cartAddItemVO){
         CartAddItemVO result = new CartAddItemVO();
         Account account = securityUtil.getCurrentUser();
+        List<CartItem> cartItems = account.getCartItems();
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getProduct().getId() == cartAddItemVO.getProductId()) {
+                Product product = cartItem.getProduct();
+                Stockpile stockpile = product.getStockpile();
+                if (cartItem.getQuantity() < cartAddItemVO.getQuantity()) {
+                    if (stockpile.getAmount() < cartAddItemVO.getQuantity()) {
+                        return null;
+                    }
+                }
+                stockpile.setAmount(stockpile.getAmount() - cartAddItemVO.getQuantity());
+                stockpile.setFrozen(stockpile.getFrozen() + cartAddItemVO.getQuantity());
+                cartItem.setQuantity(cartItem.getQuantity() + cartAddItemVO.getQuantity());
+                accountRepository.save(account);
+                stockpileRepository.save(stockpile);
+                cartItemRepository.save(cartItem);
+                result.setProductId(product.getId());
+                result.setCartItemId(cartItem.getId());
+                result.setTitle(product.getTitle());
+                result.setPrice(product.getPrice());
+                String cover = product.getCover();
+                if (cover != null){
+                    result.setCover(cover);
+                }
+                String description = product.getDescription();
+                if (description != null){
+                    result.setDescription(description);
+                }
+                String detail = product.getDetail();
+                if (detail != null){
+                    result.setDetail(detail);
+                }
+                result.setQuantity(cartAddItemVO.getQuantity());
+                return result;
+            }
+        }
         int productId = cartAddItemVO.getProductId();
         Optional<Product> productOptional = productRepository.findById(productId);
         Product product;
