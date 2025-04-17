@@ -233,11 +233,17 @@ public class CartServiceImpl implements CartService {
         BigDecimal total = new BigDecimal(0);
         Set<OrderItem> orderItems = new HashSet<>();
 
+        // 先保存订单，确保Order实体有ID
+        order.setTotalAmount(new BigDecimal(0)); // 临时设置，后面会更新
+        order.setStatus("PENDING");
+        order.setCreateTime(new Date());
+        orderRepository.save(order);
+        
         for (CartItem cartItem : cartItems){
-
             Product product = cartItem.getProduct();
-
-            total.add(product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+            
+            // 修复计算总金额的bug，使用add方法的返回值
+            total = total.add(product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
 
             Stockpile stockpile = product.getStockpile();
             stockpile.setAmount(stockpile.getAmount() - cartItem.getQuantity());
@@ -247,23 +253,24 @@ public class CartServiceImpl implements CartService {
             stockpileRepository.save(stockpile);
             productRepository.save(product);
             cartItemRepository.save(cartItem);
+            
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setProduct(product);
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setAccount(account);
             orderItems.add(orderItem);
-            account.getOrderItems().add(orderItem);
+            orderItemRepository.save(orderItem); // 立即保存每个OrderItem
         }
 
+        // 更新订单的总金额和关联的OrderItems
         order.setOrderItems(orderItems);
         order.setTotalAmount(total);
-        order.setStatus("PENDING");
-        order.setCreateTime(new Date());
         orderRepository.save(order);
+        
         account.getOrders().add(order);
+        account.getOrderItems().addAll(orderItems);
         accountRepository.save(account);
-        orderItemRepository.saveAll(order.getOrderItems());
 
         CartCheckOutOutputVO result = new CartCheckOutOutputVO();
         result.setOrderId(order.getId());

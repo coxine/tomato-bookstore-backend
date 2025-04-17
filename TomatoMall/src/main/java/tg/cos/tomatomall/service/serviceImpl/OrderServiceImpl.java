@@ -75,15 +75,16 @@ public class OrderServiceImpl implements OrderService {
 
             //  构建业务参数
             JSONObject bizContent = new JSONObject();
-            bizContent.put("out_trade_no", orderId);
-            bizContent.put("total_amount", order.getTotalAmount());
-            bizContent.put("subject", "订单支付-" + orderId);
+            bizContent.put("out_trade_no", "Page500382200512123799");
+            bizContent.put("total_amount", 0.1);
+            bizContent.put("subject", "subject");
             bizContent.put("product_code", "FAST_INSTANT_TRADE_PAY");
+
             request.setBizContent(bizContent.toString());
 
             //  生成支付表单
             String form = alipayClient.pageExecute(request).getBody();
-
+            System.err.println(form);
             OrderPayVO res = new OrderPayVO();
             res.setOrderId(orderId);
             res.setPaymentForm(form);
