@@ -5,6 +5,7 @@ import lombok.Setter;
 import tg.cos.tomatomall.dto.SpecificationDTO;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 
@@ -18,6 +19,6 @@ public class ProductVO {
     private String description;
     private String cover;
     private String detail;
-    private Set<SpecificationVO> specifications;
+    private List<SpecificationVO> specifications;
 
 }

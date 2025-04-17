@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
             productVO.setPrice(product.getPrice());
             productVO.setRate(product.getRate());
             if (product.getSpecifications() != null) {
-                Set<SpecificationVO> specs = new HashSet<>();
+                List<SpecificationVO> specs = new ArrayList<>();
                 for (Specification specification : product.getSpecifications()) {
                     SpecificationVO specificationVO = new SpecificationVO();
                     specificationVO.setId(specification.getId());
@@ -86,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
         productVO.setPrice(product.getPrice());
         productVO.setRate(product.getRate());
         if (product.getSpecifications() != null) {
-            Set<SpecificationVO> specs = new HashSet<>();
+            List<SpecificationVO> specs = new ArrayList<>();
             for (Specification specification : product.getSpecifications()) {
                 SpecificationVO specificationVO = new SpecificationVO();
                 specificationVO.setId(specification.getId());
@@ -194,7 +194,7 @@ public class ProductServiceImpl implements ProductService {
         }
         if (productVO.getSpecifications() != null) {
             product.getSpecifications().clear();
-            Set<Specification> specifications = product.getSpecifications();
+            List<Specification> specifications = product.getSpecifications();
             for (SpecificationVO specVO : productVO.getSpecifications()) {
                 Specification specification = new Specification();
                 specification.setProduct(product);
@@ -282,7 +282,7 @@ public class ProductServiceImpl implements ProductService {
         if (specs != null) {
             vo.setSpecifications(specs.stream()
                     .map(this::convertToSpecificationVO)
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toList()));
         }
 
         // Set stockpile

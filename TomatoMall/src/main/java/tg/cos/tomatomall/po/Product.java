@@ -11,6 +11,7 @@ import tg.cos.tomatomall.dto.SpecificationDTO;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -51,7 +52,7 @@ public class Product {
     private String detail;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Specification> specifications;
+    private List<Specification> specifications;
 
 //    @Column(name = "stockpile")
 //    @JsonIgnore
