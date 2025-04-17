@@ -12,10 +12,7 @@ import tg.cos.tomatomall.vo.CartCheckOutOutputVO;
 import tg.cos.tomatomall.vo.CartGetListVO;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -126,13 +123,13 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartGetListVO getList(){
         Account account = securityUtil.getCurrentUser();
-        Set<CartItem> cartItems = account.getCartItems();
+        List<CartItem> cartItems = account.getCartItems();
 
         CartGetListVO result = new CartGetListVO();
 
         int total = 0;
         BigDecimal amount = new BigDecimal(0);
-        Set<CartAddItemVO> cartAddItemVOSet = new HashSet<>();
+        List<CartAddItemVO> cartAddItemVOSet = new ArrayList<>();
 
         for (CartItem cartItem : cartItems){
             total++;
