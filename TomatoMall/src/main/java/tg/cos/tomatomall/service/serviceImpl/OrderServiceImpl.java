@@ -75,9 +75,9 @@ public class OrderServiceImpl implements OrderService {
 
             //  构建业务参数
             JSONObject bizContent = new JSONObject();
-            bizContent.put("out_trade_no", "Page500382200512123799");
-            bizContent.put("total_amount", 0.1);
-            bizContent.put("subject", "subject");
+            bizContent.put("out_trade_no", orderId);
+            bizContent.put("total_amount", order.getTotalAmount());
+            bizContent.put("subject", "payment for order " + orderId);
             bizContent.put("product_code", "FAST_INSTANT_TRADE_PAY");
 
             request.setBizContent(bizContent.toString());
