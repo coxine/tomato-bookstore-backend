@@ -121,6 +121,11 @@ public class CartServiceImpl implements CartService {
             return "购物车商品不存在";
         }
 
+        CartItem cartItem = cartItemOptional.get();
+        Product product = cartItem.getProduct();
+        Stockpile stockpile = product.getStockpile();
+        stockpile.setAmount(stockpile.getAmount() + cartItem.getQuantity());
+        stockpile.setFrozen(stockpile.getFrozen() - cartItem.getQuantity());
         cartItemRepository.deleteById(id);
         return "删除成功";
     }
