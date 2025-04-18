@@ -118,11 +118,11 @@ public class CartServiceImpl implements CartService {
             return "购物车商品不存在";
         }
 
-        CartItem cartItem = cartItemOptional.get();
-        Product product = cartItem.getProduct();
-        Stockpile stockpile = product.getStockpile();
-        stockpile.setAmount(stockpile.getAmount() + cartItem.getQuantity());
-        stockpile.setFrozen(stockpile.getFrozen() - cartItem.getQuantity());
+//        CartItem cartItem = cartItemOptional.get();
+//        Product product = cartItem.getProduct();
+//        Stockpile stockpile = product.getStockpile();
+//        stockpile.setAmount(stockpile.getAmount() + cartItem.getQuantity());
+//        stockpile.setFrozen(stockpile.getFrozen() - cartItem.getQuantity());
         cartItemRepository.deleteById(id);
         return "删除成功";
     }
@@ -138,16 +138,16 @@ public class CartServiceImpl implements CartService {
         Product product = cartItem.getProduct();
         Stockpile stockpile = product.getStockpile();
         if (quantity > cartAddItemVO.getQuantity()){
-            Integer newQuantity = quantity - cartAddItemVO.getQuantity();
-            stockpile.setAmount(stockpile.getAmount()+newQuantity);
-            stockpile.setFrozen(stockpile.getFrozen()-newQuantity);
+//            Integer newQuantity = quantity - cartAddItemVO.getQuantity();
+//            stockpile.setAmount(stockpile.getAmount()+newQuantity);
+//            stockpile.setFrozen(stockpile.getFrozen()-newQuantity);
         }else {
             Integer newQuantity = cartAddItemVO.getQuantity() - quantity;
             if (newQuantity > stockpile.getAmount()){
                 return "库存不足";
             }else {
-                stockpile.setAmount(stockpile.getAmount()-newQuantity);
-                stockpile.setFrozen(stockpile.getFrozen()+newQuantity);
+//                stockpile.setAmount(stockpile.getAmount()-newQuantity);
+//                stockpile.setFrozen(stockpile.getFrozen()+newQuantity);
             }
         }
         stockpileRepository.save(stockpile);
