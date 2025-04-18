@@ -39,7 +39,7 @@ public class OrdersController {
         // 1. 解析支付宝回调参数（通常是 application/x-www-form-urlencoded）
         Map<String, String>     params = request.getParameterMap().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()[0]));
-        System.err.println(params);
+        // System.err.println(params);
         // 2. 验证支付宝签名（防止伪造请求）
         boolean signVerified = false;
         try {
