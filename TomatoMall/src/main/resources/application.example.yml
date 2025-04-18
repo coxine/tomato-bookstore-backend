@@ -25,5 +25,5 @@ alipay:
   server-url:
   charset:
   sign-type:
-  notify-url:
-  return-url:
+  return-url:  http://t93tve.natappfree.cc/api/orders/returnUrl
+  notify-url : http://t93tve.natappfree.cc/api/orders/notify
