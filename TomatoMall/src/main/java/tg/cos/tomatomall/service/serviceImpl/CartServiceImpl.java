@@ -47,11 +47,8 @@ public class CartServiceImpl implements CartService {
                     if (stockpile.getAmount() < cartAddItemVO.getQuantity()) {
                         return null;
                     }
-                stockpile.setAmount(stockpile.getAmount() - cartAddItemVO.getQuantity());
-                stockpile.setFrozen(stockpile.getFrozen() + cartAddItemVO.getQuantity());
                 cartItem.setQuantity(cartItem.getQuantity() + cartAddItemVO.getQuantity());
                 accountRepository.save(account);
-                stockpileRepository.save(stockpile);
                 cartItemRepository.save(cartItem);
                 result.setProductId(product.getId());
                 result.setCartItemId(cartItem.getId());
