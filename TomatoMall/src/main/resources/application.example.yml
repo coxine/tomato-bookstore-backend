@@ -25,5 +25,5 @@ alipay:
   server-url:
   charset:
   sign-type:
-  return-url:  https://read-back.cos.tg/api/orders/returnUrl
-  notify-url : https://read-back.cos.tg/api/orders/notify
+  notify-url:  https://read-back.cos.tg/api/orders/notify
+  return-url:  https://tm.cos.tg/cart
