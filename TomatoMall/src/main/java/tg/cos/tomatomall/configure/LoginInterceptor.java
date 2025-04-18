@@ -29,7 +29,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("{\"code\":401,\"message\":\"NOT LOGIN!!! Token is invalid - Method: " + method + ", URI: " + uri\"}");
+            response.getWriter().write("{\"code\":401,\"message\":\"NOT LOGIN!!! Token is invalid - Method: " + method + ", URI: " + uri + "\"}");
             System.err.println("NOT LOGIN!!! Token is invalid - Method: " + method + ", URI: " + uri);
             return false;
         }
