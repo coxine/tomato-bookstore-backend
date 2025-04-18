@@ -61,7 +61,7 @@ public class OrdersController {
             String amount = params.get("total_amount"); // 支付金额
 
             // 更新订单状态（注意幂等性，防止重复处理）
-            orderService.updateOrderStatus(orderId, alipayTradeNo, amount);
+            orderService.updateOrderStatus(orderId, alipayTradeNo, amount,"SUCCESS");
 
             // 扣减库存（建议加锁或乐观锁）
 //            inventoryService.reduceStock(orderId);

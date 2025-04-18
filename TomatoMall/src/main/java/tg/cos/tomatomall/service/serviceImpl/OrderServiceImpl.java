@@ -3,12 +3,15 @@ package tg.cos.tomatomall.service.serviceImpl;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tg.cos.tomatomall.po.Order;
 import tg.cos.tomatomall.po.OrderItem;
 import tg.cos.tomatomall.po.Product;
 import tg.cos.tomatomall.po.Stockpile;
 import tg.cos.tomatomall.repository.OrderRepository;
+import tg.cos.tomatomall.repository.StockpileRepository;
 import tg.cos.tomatomall.service.OrderService;
 import tg.cos.tomatomall.vo.OrderPayVO;
 
@@ -20,13 +23,20 @@ import com.alipay.api.internal.util.*;
 import com.alipay.api.request.*;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@EnableScheduling
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OrderRepository orderRepository;
+
+    @Autowired
+    StockpileRepository stockpileRepository;
 
     @Value("${alipay.app-id}")
     private String APPID;
@@ -99,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrderStatus(String orderId, String alipayTradeNo, String amount){
+    public void updateOrderStatus(String orderId, String alipayTradeNo, String amount,String status){
         Integer id = Integer.parseInt(orderId);
         Optional<Order> orderOptional = orderRepository.findById(id);
         if(orderOptional.isEmpty()){
@@ -109,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
         order.setAlipayTradeNo(alipayTradeNo);
         BigDecimal payAmount = new BigDecimal(amount);
         order.setPayAmount(payAmount);
-        order.setStatus("SUCCESS");
+        order.setStatus(status);
         orderRepository.save(order);
 
         for (OrderItem item : order.getOrderItems()) {
@@ -118,4 +128,33 @@ public class OrderServiceImpl implements OrderService {
             stockpile.setFrozen(stockpile.getFrozen() - item.getQuantity());
         }
     }
+        // 每5分钟执行一次
+        @Scheduled(fixedRate = 300000)
+        public void checkAndReleaseTimeoutOrders() {
+            System.out.println("checkAndReleaseTimeoutOrders");
+            // 获取30分钟前的时间
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MINUTE, -30);
+            Date thirtyMinutesAgo = calendar.getTime();
+            
+            // 查找所有超时未支付的订单
+            List<Order> timeoutOrders = orderRepository.findByStatusAndCreateTimeBefore("PENDING", thirtyMinutesAgo);
+            
+            for (Order order : timeoutOrders) {
+                // 释放库存
+                for (OrderItem orderItem : order.getOrderItems()) {
+                    Product product = orderItem.getProduct();
+                    Stockpile stockpile = product.getStockpile();
+                    
+                    // 减少冻结数量
+                    stockpile.setFrozen(stockpile.getFrozen() - orderItem.getQuantity());
+                    stockpile.setAmount(stockpile.getAmount() + orderItem.getQuantity());
+                    stockpileRepository.save(stockpile);
+                }
+                
+                // 更新订单状态为已取消
+                order.setStatus("CANCELLED");
+                orderRepository.save(order);
+            }
+        }
 }
