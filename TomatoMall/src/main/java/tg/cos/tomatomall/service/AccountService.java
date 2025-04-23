@@ -8,4 +8,5 @@ public interface AccountService {
     String createUser(AccountDTO accountDTO);
     String login(String username, String password);
     String updateUser(AccountDTO accountDTO);
+    String changePassword(AccountDTO accountDTO);
 }

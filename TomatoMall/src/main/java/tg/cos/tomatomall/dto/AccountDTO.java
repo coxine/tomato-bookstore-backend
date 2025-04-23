@@ -15,6 +15,7 @@ public class AccountDTO {
     private String name;
     private String role;
     private String password;
+    private String newPassword;//for change password
     private String avatar;
     private String telephone;
     private String email;

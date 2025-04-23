@@ -119,4 +119,32 @@ public class AccountServiceImpl implements AccountService {
         return "用户信息更新成功";
     }
 
+    @Override
+    public String changePassword(AccountDTO accountDTO) {
+        // 1. 验证用户名和旧密码
+        Optional<Account> accountOptional = accountRepository.findByUsername(accountDTO.getUsername());
+        if (accountOptional.isEmpty()) {
+            return "用户不存在";
+        }
+
+        Account account = accountOptional.get();
+
+        if (!passwordEncoder.matches(accountDTO.getPassword(), account.getPassword())) {
+            return "原密码错误";
+        }
+
+        // 2. 验证新密码格式
+        if (containsInvalidCharacters(accountDTO.getNewPassword())) {
+            return "新密码格式不合法";
+        }
+        if(accountDTO.getPassword().equals(accountDTO.getNewPassword()))
+            return "原密码与新密码不得一致";
+        // 3. 加密新密码并保存
+        String encodedNewPassword = passwordEncoder.encode(accountDTO.getNewPassword());
+        account.setPassword(encodedNewPassword);
+        accountRepository.save(account);
+
+        return "密码修改成功";
+    }
+
 }
