@@ -10,5 +10,5 @@ public class TomatoMallApplication {
     public static void main(String[] args) {
         SpringApplication.run(TomatoMallApplication.class, args);
     }
-    //try github actions
+    //try github actions again
 }
