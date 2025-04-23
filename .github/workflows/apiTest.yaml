@@ -1,4 +1,4 @@
-name: Lab1 Account success API Tests
+name: APIFOX
 
 on:
   workflow_run:   # 监听其他 Workflow 完成
@@ -15,5 +15,9 @@ jobs:
           node-version: '14'
       - name: Install Apifox CLI
         run: npm install -g apifox-cli
-      - name: Running Test Scenario
+      - name: Running Lab1 with token 
         run: apifox run --access-token APS-Jo8YACt4oWP1lpnq3IU2eUrEJJjeZYyq -t 6429858 -e 32016913 -n 1 -r html,cli
+      - name: Running Lab1 without token
+        run: apifox run --access-token APS-Jo8YACt4oWP1lpnq3IU2eUrEJJjeZYyq -t 6429859 -e 32016913 -n 1 -r html,cli
+      - name: Running Lab2 
+        run: apifox run --access-token APS-Jo8YACt4oWP1lpnq3IU2eUrEJJjeZYyq -t 6429860 -e 31506010 -n 1 -r html,cli
