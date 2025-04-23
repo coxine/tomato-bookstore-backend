@@ -21,3 +21,5 @@ jobs:
         run: apifox run --access-token APS-FdAVhAZNsvaMMGPe63kv6Z4Q1drEctAW -t 6429859 -e 32016913 -n 1 -r html,cli
       - name: Running Lab2 
         run: apifox run --access-token APS-FdAVhAZNsvaMMGPe63kv6Z4Q1drEctAW -t 6429860 -e 32016913 -n 1 -r html,cli
+      - name: Running Lab4
+        run: apifox run --access-token APS-FdAVhAZNsvaMMGPe63kv6Z4Q1drEctAW -t 6429861 -e 32016913 -n 1 -r html,cli
