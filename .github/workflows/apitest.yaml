@@ -1,7 +1,9 @@
 name: Lab1 Account success API Tests
 
 on:
-    branches: [dev]  # 限定为 dev 分支
+  push:
+    branches:
+      - dev
 
 jobs:
   build:
