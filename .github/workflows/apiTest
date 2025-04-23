@@ -1,0 +1,19 @@
+name: Lab1 Account success API Tests
+
+on:
+  workflow_run:   # 监听其他 Workflow 完成
+    workflows: ["👷 Build and Deploy"] 
+    types: [completed]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install Apifox CLI
+        run: npm install -g apifox-cli
+      - name: Running Test Scenario
+        run: apifox run --access-token $APIFOX_ACCESS_TOKEN -t 6429858 -e 32016913 -n 1 -r html,cli
