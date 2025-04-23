@@ -23,6 +23,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if ("POST".equals(method) && "/api/accounts".equals(uri)) {
             return true;
         }
+//        System.err.println(request.getHeader("X-Test-By"));
         String token = request.getHeader("token");
         if (token != null && tokenUtil.verifyToken(token)) {
             request.getSession().setAttribute("currentUser",tokenUtil.getAccount(token));

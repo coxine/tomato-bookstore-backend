@@ -39,7 +39,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
             vo.setProductId(advertisement.getProduct().getId());
             res.add(vo);
         }
-        return res;
+        return res.reversed();
     }
 
     @Override
