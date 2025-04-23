@@ -9,4 +9,5 @@ public interface AdvertisementService {
     String update(AdvertisementVO advertisementVO);
     AdvertisementVO create(AdvertisementVO advertisementVO);
     String delete(Integer id);
+    AdvertisementVO getById(Integer id);
 }

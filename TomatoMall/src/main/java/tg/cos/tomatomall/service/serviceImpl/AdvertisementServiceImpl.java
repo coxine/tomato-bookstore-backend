@@ -118,4 +118,20 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         advertisementRepository.deleteById(id);
         return "删除成功";
     }
+
+    @Override
+public AdvertisementVO getById(Integer id) {
+    Optional<Advertisement> advertisementOptional = advertisementRepository.findById(id);
+    if (advertisementOptional.isEmpty()) {
+        return null;
+    }
+    Advertisement advertisement = advertisementOptional.get();
+    AdvertisementVO vo = new AdvertisementVO();
+    vo.setId(advertisement.getId());
+    vo.setTitle(advertisement.getTitle());
+    vo.setContent(advertisement.getContent());
+    vo.setImgUrl(advertisement.getImageUrl());
+    vo.setProductId(advertisement.getProduct().getId());
+    return vo;
+}
 }

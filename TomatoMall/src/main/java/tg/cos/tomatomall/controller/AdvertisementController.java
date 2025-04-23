@@ -51,4 +51,14 @@ public class AdvertisementController {
         }
         return Response.buildFailure(result, "400");
     }
+
+    @GetMapping("/{id}")
+    public Response<?> getAdvertisementById(@PathVariable("id") Integer id) {
+        AdvertisementVO res = advertisementService.getById(id);
+        if (res == null) {
+            return Response.buildFailure("广告不存在", "400");
+        }
+        return Response.buildSuccess(res);
+    }
+    
 }
