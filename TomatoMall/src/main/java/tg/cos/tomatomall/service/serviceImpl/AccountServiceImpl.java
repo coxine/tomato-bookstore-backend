@@ -122,7 +122,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String changePassword(AccountDTO accountDTO) {
         // 1. 验证用户名和旧密码
-        Optional<Account> accountOptional = accountRepository.findByUsername(accountDTO.getUsername());
+        Account accountFromToken=securityUtil.getCurrentUser();
+        Optional<Account> accountOptional = accountRepository.findByUsername(accountFromToken.getUsername());
         if (accountOptional.isEmpty()) {
             return "用户不存在";
         }

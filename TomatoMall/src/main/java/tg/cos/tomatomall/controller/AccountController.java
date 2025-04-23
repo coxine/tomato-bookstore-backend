@@ -71,9 +71,6 @@ public class AccountController {
 
     @PutMapping("/password")
     public Response<?> changePassword(@RequestBody AccountDTO accountDTO) {
-        System.out.println(accountDTO.getUsername());
-        System.out.println(accountDTO.getPassword());
-        System.out.println(accountDTO.getNewPassword());
         String result = accountService.changePassword(accountDTO);
         if ("密码修改成功".equals(result)) {
             return Response.buildSuccess(result);
