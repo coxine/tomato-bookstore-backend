@@ -1,9 +1,6 @@
 name: Lab1 Account success API Tests
 
 on:
-  workflow_run:
-    workflows: ["👷 Build and Deploy"]
-    types: [completed]
     branches: [dev]  # 限定为 dev 分支
 
 jobs:
