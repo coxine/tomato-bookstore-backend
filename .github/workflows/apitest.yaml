@@ -17,4 +17,5 @@ jobs:
       - name: Install Apifox CLI
         run: npm install -g apifox-cli
       - name: Running Test Scenario
-        run: apifox run --access-token APS-xVsYhDhBnSO7IMcXNhWDQCdDo1Bdj7Ts -t 6429858 -e 32016913 -n 1 -r html,cli -H "X-Test-By:APIFoxInGitHubActions"
+        run: "apifox run --access-token APS-xVsYhDhBnSO7IMcXNhWDQCdDo1Bdj7Ts -t 6429858 -e 32016913 -n 1 -r html,cli -H \"X-Test-By: APIFoxInGitHubActions\""
+
