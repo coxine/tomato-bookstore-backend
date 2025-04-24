@@ -21,7 +21,7 @@ public class CartController {
         if (res != null) {
             return Response.buildSuccess(res);
         }else {
-            return Response.buildFailure("加入失败","400");
+            return Response.buildFailure("加入购物车的数量超出库存","400");
         }
     }
 
