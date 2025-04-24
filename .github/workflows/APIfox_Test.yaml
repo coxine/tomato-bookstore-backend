@@ -1,4 +1,4 @@
-name: APIFOX
+name: 🦊 Apifox Test
 
 on:
   workflow_run:   # 监听其他 Workflow 完成
