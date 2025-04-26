@@ -2,6 +2,8 @@ package tg.cos.tomatomall.service.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tg.cos.tomatomall.dto.CartAddItemDTO;
+import tg.cos.tomatomall.dto.CartCheckOutInputDTO;
 import tg.cos.tomatomall.po.*;
 import tg.cos.tomatomall.repository.*;
 import tg.cos.tomatomall.service.CartService;
@@ -36,18 +38,18 @@ public class CartServiceImpl implements CartService {
     private OrderItemRepository orderItemRepository;
 
     @Override
-    public CartAddItemVO addItem(CartAddItemVO cartAddItemVO){
+    public CartAddItemVO addItem(CartAddItemDTO cartAddItemDTO){
         CartAddItemVO result = new CartAddItemVO();
         Account account = securityUtil.getCurrentUser();
         List<CartItem> cartItems = account.getCartItems();
         for (CartItem cartItem : cartItems) {
-            if (cartItem.getProduct().getId() == cartAddItemVO.getProductId()) {
+            if (cartItem.getProduct().getId() == cartAddItemDTO.getProductId()) {
                 Product product = cartItem.getProduct();
                 Stockpile stockpile = product.getStockpile();
-                    if (stockpile.getAmount() < cartAddItemVO.getQuantity() + cartItem.getQuantity()) {
+                    if (stockpile.getAmount() < cartAddItemDTO.getQuantity() + cartItem.getQuantity()) {
                         return null;
                     }
-                cartItem.setQuantity(cartItem.getQuantity() + cartAddItemVO.getQuantity());
+                cartItem.setQuantity(cartItem.getQuantity() + cartAddItemDTO.getQuantity());
                 accountRepository.save(account);
                 cartItemRepository.save(cartItem);
                 result.setProductId(product.getId());
@@ -66,11 +68,11 @@ public class CartServiceImpl implements CartService {
                 if (detail != null){
                     result.setDetail(detail);
                 }
-                result.setQuantity(cartAddItemVO.getQuantity());
+                result.setQuantity(cartAddItemDTO.getQuantity());
                 return result;
             }
         }
-        int productId = cartAddItemVO.getProductId();
+        int productId = cartAddItemDTO.getProductId();
         Optional<Product> productOptional = productRepository.findById(productId);
         Product product;
         if(productOptional.isPresent()){
@@ -78,7 +80,7 @@ public class CartServiceImpl implements CartService {
         }else {
             return null;
         }
-        int quantity = cartAddItemVO.getQuantity();
+        int quantity = cartAddItemDTO.getQuantity();
         if (quantity > product.getStockpile().getAmount()){
             return null;
         }
@@ -128,7 +130,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public String updateItem(Integer id, CartAddItemVO cartAddItemVO) {
+    public String updateItem(Integer id, CartAddItemDTO cartAddItemDTO) {
         Optional<CartItem> cartItemOptional = cartItemRepository.findById(id);
         if (cartItemOptional.isEmpty()){
             return "购物车商品不存在";
@@ -137,12 +139,12 @@ public class CartServiceImpl implements CartService {
         Integer quantity = cartItem.getQuantity();
         Product product = cartItem.getProduct();
         Stockpile stockpile = product.getStockpile();
-        if (quantity > cartAddItemVO.getQuantity()){
+        if (quantity > cartAddItemDTO.getQuantity()){
 //            Integer newQuantity = quantity - cartAddItemVO.getQuantity();
 //            stockpile.setAmount(stockpile.getAmount()+newQuantity);
 //            stockpile.setFrozen(stockpile.getFrozen()-newQuantity);
         }else {
-            Integer newQuantity = cartAddItemVO.getQuantity() - quantity;
+            Integer newQuantity = cartAddItemDTO.getQuantity() - quantity;
             if (newQuantity > stockpile.getAmount()){
                 return "库存不足";
             }else {
@@ -151,7 +153,7 @@ public class CartServiceImpl implements CartService {
             }
         }
         stockpileRepository.save(stockpile);
-        cartItem.setQuantity(cartAddItemVO.getQuantity());
+        cartItem.setQuantity(cartAddItemDTO.getQuantity());
         cartItemRepository.save(cartItem);
         return "修改数量成功";
     }
@@ -200,20 +202,20 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartCheckOutOutputVO checkout(CartCheckOutInputVO cartCheckOutInputVO){
+    public CartCheckOutOutputVO checkout(CartCheckOutInputDTO cartCheckOutInputDTO){
 //        System.out.println("进入checkout Service");
         Account account = securityUtil.getCurrentUser();
         Order order = new Order();
         order.setAccount(account);
         // TODO: 检查paymentMethod是否合法
-        order.setPaymentMethod(cartCheckOutInputVO.getPayment_method());
-        order.setName(cartCheckOutInputVO.getShipping_address().getName());
-        order.setAddress(cartCheckOutInputVO.getShipping_address().getAddress());
-        order.setPhone(cartCheckOutInputVO.getShipping_address().getPhone());
+        order.setPaymentMethod(cartCheckOutInputDTO.getPayment_method());
+        order.setName(cartCheckOutInputDTO.getShipping_address().getName());
+        order.setAddress(cartCheckOutInputDTO.getShipping_address().getAddress());
+        order.setPhone(cartCheckOutInputDTO.getShipping_address().getPhone());
         Set<CartItem> cartItems = new HashSet<>();
 
         // 查看购买的商品
-        for (Integer cartItemId : cartCheckOutInputVO.getCartItemIds()) {
+        for (Integer cartItemId : cartCheckOutInputDTO.getCartItemIds()) {
             Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
             if (cartItemOptional.isEmpty()){
 //                System.out.println("查询不到购物车商品");
@@ -276,7 +278,7 @@ public class CartServiceImpl implements CartService {
         result.setOrderId(order.getId());
         result.setUsername(account.getUsername());
         result.setTotalAmount(total);
-        result.setPaymentMethod(cartCheckOutInputVO.getPayment_method());
+        result.setPaymentMethod(cartCheckOutInputDTO.getPayment_method());
         result.setCreateTime(order.getCreateTime());
         result.setStatus(order.getStatus());
         return result;

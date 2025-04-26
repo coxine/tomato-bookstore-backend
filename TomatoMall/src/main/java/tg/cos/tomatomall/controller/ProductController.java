@@ -52,8 +52,8 @@ public class ProductController {
      * 更新商品信息
      */
     @PutMapping
-    public Response<?> updateProduct(@RequestBody ProductVO productVO) {
-        String msg = productService.updateProduct(productVO);
+    public Response<?> updateProduct(@RequestBody ProductDTO productDTO) {
+        String msg = productService.updateProduct(productDTO);
         if (msg.equals("更新成功")) {
             return Response.buildSuccess(msg);
         }
@@ -80,8 +80,8 @@ public class ProductController {
     @PatchMapping("/stockpile/{productId}")
     public Response<?> updateStockpile(
             @PathVariable("productId") Integer productId,
-            @RequestBody StockPileUpdateVO amount) {
-        String msg = productService.updateStockpile(productId, amount);
+            @RequestBody StockpileDTO stockpileDTO) {
+        String msg = productService.updateStockpile(productId, stockpileDTO);
         if (msg.equals("调整库存成功")) {
             return Response.buildSuccess(msg);
         }

@@ -1,11 +1,11 @@
 package tg.cos.tomatomall.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import tg.cos.tomatomall.dto.CartAddItemDTO;
+import tg.cos.tomatomall.dto.CartCheckOutInputDTO;
 import tg.cos.tomatomall.service.CartService;
 import tg.cos.tomatomall.vo.CartAddItemVO;
-import tg.cos.tomatomall.vo.CartCheckOutInputVO;
 import tg.cos.tomatomall.vo.CartCheckOutOutputVO;
 import tg.cos.tomatomall.vo.Response;
 
@@ -16,8 +16,8 @@ public class CartController {
     private CartService cartService;
 
     @PostMapping
-    public Response<?> addItem(@RequestBody CartAddItemVO cartAddItemVO) {
-        CartAddItemVO res =  cartService.addItem(cartAddItemVO);
+    public Response<?> addItem(@RequestBody CartAddItemDTO cartAddItemDTO) {
+        CartAddItemVO res =  cartService.addItem(cartAddItemDTO);
         if (res != null) {
             return Response.buildSuccess(res);
         }else {
@@ -36,8 +36,8 @@ public class CartController {
     }
 
     @PatchMapping("/{cartItemId}")
-    public Response<?> updateItem(@PathVariable("cartItemId") Integer cartItemId, @RequestBody CartAddItemVO cartAddItemVO) {
-        String res =  cartService.updateItem(cartItemId,cartAddItemVO);
+    public Response<?> updateItem(@PathVariable("cartItemId") Integer cartItemId, @RequestBody CartAddItemDTO cartAddItemDTO) {
+        String res =  cartService.updateItem(cartItemId,cartAddItemDTO);
         if (res.equals("修改数量成功")){
             return Response.buildSuccess(res);
         }else {
@@ -51,8 +51,8 @@ public class CartController {
     }
 
     @PostMapping("/checkout")
-    public Response<?> checkout(@RequestBody CartCheckOutInputVO cartCheckOutInputVO) {
-        CartCheckOutOutputVO res = cartService.checkout(cartCheckOutInputVO);
+    public Response<?> checkout(@RequestBody CartCheckOutInputDTO cartCheckOutInputDTO) {
+        CartCheckOutOutputVO res = cartService.checkout(cartCheckOutInputDTO);
         if (res != null) {
             return Response.buildSuccess(res);
         }else {

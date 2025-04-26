@@ -154,7 +154,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String updateProduct(ProductVO productVO) {
+    public String updateProduct(ProductDTO productDTO) {
         Account account = securityUtil.getCurrentUser();
         if (!account.getRole().toUpperCase().equals("ADMIN")) {
             return "需要管理员权限";
@@ -186,16 +186,16 @@ public class ProductServiceImpl implements ProductService {
 //                })
 //                .orElse(null);
         Product product;
-        Optional<Product> optionalProduct = productRepository.findById(productVO.getId());
+        Optional<Product> optionalProduct = productRepository.findById(productDTO.getId());
         if (optionalProduct.isPresent()) {
             product = optionalProduct.get();
         }else {
             return "商品不存在";
         }
-        if (productVO.getSpecifications() != null) {
+        if (productDTO.getSpecifications() != null) {
             product.getSpecifications().clear();
             List<Specification> specifications = product.getSpecifications();
-            for (SpecificationVO specVO : productVO.getSpecifications()) {
+            for (SpecificationVO specVO : productDTO.getSpecifications()) {
                 Specification specification = new Specification();
                 specification.setProduct(product);
                 if (specVO.getId() != null) {
@@ -207,24 +207,24 @@ public class ProductServiceImpl implements ProductService {
             }
             product.setSpecifications(specifications);
         }
-        if (productVO.getCover() != null) {
-            product.setCover(productVO.getCover());
+        if (productDTO.getCover() != null) {
+            product.setCover(productDTO.getCover());
             product.setLastChangeCover(new Date());
         }
-        if (productVO.getPrice() != null) {
-            product.setPrice(productVO.getPrice());
+        if (productDTO.getPrice() != null) {
+            product.setPrice(productDTO.getPrice());
         }
-        if (productVO.getRate() != null) {
-            product.setRate(productVO.getRate());
+        if (productDTO.getRate() != null) {
+            product.setRate(productDTO.getRate());
         }
-        if (productVO.getDetail() != null) {
-            product.setDetail(productVO.getDetail());
+        if (productDTO.getDetail() != null) {
+            product.setDetail(productDTO.getDetail());
         }
-        if (productVO.getTitle() != null) {
-            product.setTitle(productVO.getTitle());
+        if (productDTO.getTitle() != null) {
+            product.setTitle(productDTO.getTitle());
         }
-        if (productVO.getDescription() != null) {
-            product.setDescription(productVO.getDescription());
+        if (productDTO.getDescription() != null) {
+            product.setDescription(productDTO.getDescription());
         }
         productRepository.save(product);
         return "更新成功";
@@ -252,14 +252,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public String updateStockpile(Integer productId, StockPileUpdateVO amount) {
+    public String updateStockpile(Integer productId, StockpileDTO stockpileDTO) {
         Account account = securityUtil.getCurrentUser();
         if (!account.getRole().toUpperCase().equals("ADMIN")) {
             return "需要管理员权限";
         }
         stockpileRepository.findByProductId(productId)
                 .map(stockpile -> {
-                    stockpile.setAmount(amount.getAmount());
+                    stockpile.setAmount(stockpile.getAmount());
                     Stockpile updated = stockpileRepository.save(stockpile);
                     return convertToStockpileVO(updated);
                 });
