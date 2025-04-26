@@ -3,6 +3,7 @@ package tg.cos.tomatomall.controller;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import tg.cos.tomatomall.dto.AdvertisementDTO;
 import tg.cos.tomatomall.service.AdvertisementService;
 import tg.cos.tomatomall.vo.AdvertisementVO;
 import tg.cos.tomatomall.vo.Response;
@@ -26,8 +27,8 @@ public class AdvertisementController {
     }
 
     @PutMapping
-    public Response<?> updateAdvertisement(@RequestBody AdvertisementVO vo) {
-        String result = advertisementService.update(vo);
+    public Response<?> updateAdvertisement(@RequestBody AdvertisementDTO dto) {
+        String result = advertisementService.update(dto);
         if (result.equals("更新成功")){
             return Response.buildSuccess(result);
         }
@@ -35,8 +36,8 @@ public class AdvertisementController {
     }
 
     @PostMapping
-    public Response<?> addAdvertisement(@RequestBody AdvertisementVO vo) {
-        AdvertisementVO res = advertisementService.create(vo);
+    public Response<?> addAdvertisement(@RequestBody AdvertisementDTO dto) {
+        AdvertisementVO res = advertisementService.create(dto);
         if (res == null){
             return Response.buildFailure("商品不存在", "400");
         }

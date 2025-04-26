@@ -1,15 +1,17 @@
 package tg.cos.tomatomall.po;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
+import tg.cos.tomatomall.dto.AdvertisementDTO;
 
 import java.util.Date;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "advertisements")
 public class Advertisement {
@@ -33,4 +35,14 @@ public class Advertisement {
 
     @Column(name = "last_image_change_time")
     private Date lastImageChangeTime;
+    public AdvertisementDTO toDTO(){
+        AdvertisementDTO advertisementDTO=new AdvertisementDTO();
+        advertisementDTO.setId(id);
+        advertisementDTO.setTitle(title);
+        advertisementDTO.setContent(content);
+        advertisementDTO.setImgUrl(imageUrl);
+        advertisementDTO.setProductId(this.product.getId());
+        return advertisementDTO;
+    }
+
 }

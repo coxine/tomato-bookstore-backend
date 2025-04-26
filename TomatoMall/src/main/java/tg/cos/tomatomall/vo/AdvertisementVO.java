@@ -11,4 +11,5 @@ public class AdvertisementVO {
     String content;
     String imgUrl;
     Integer productId;
+
 }

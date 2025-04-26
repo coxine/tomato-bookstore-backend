@@ -2,6 +2,7 @@ package tg.cos.tomatomall.service.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tg.cos.tomatomall.dto.AdvertisementDTO;
 import tg.cos.tomatomall.po.Account;
 import tg.cos.tomatomall.po.Advertisement;
 import tg.cos.tomatomall.po.Product;
@@ -32,39 +33,40 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         List<AdvertisementVO> res = new ArrayList<>();
         for (Advertisement advertisement : advertisements){
             AdvertisementVO vo = new AdvertisementVO();
-            vo.setId(advertisement.getId());
-            vo.setTitle(advertisement.getTitle());
-            vo.setContent(advertisement.getContent());
-            vo.setImgUrl(advertisement.getImageUrl());
-            vo.setProductId(advertisement.getProduct().getId());
+//            vo.setId(advertisement.getId());
+//            vo.setTitle(advertisement.getTitle());
+//            vo.setContent(advertisement.getContent());
+//            vo.setImgUrl(advertisement.getImageUrl());
+//            vo.setProductId(advertisement.getProduct().getId());
+            vo=advertisement.toDTO().toVO();
             res.add(vo);
         }
         return res.reversed();
     }
 
     @Override
-    public String update(AdvertisementVO advertisementVO) {
+    public String update(AdvertisementDTO advertisementDTO) {
         Account account = securityUtil.getCurrentUser();
         if (!account.getRole().toUpperCase().equals("ADMIN")) {
             return "需要管理员权限";
         }
-        Optional<Advertisement> advertisementOptional = advertisementRepository.findById(advertisementVO.getId());
+        Optional<Advertisement> advertisementOptional = advertisementRepository.findById(advertisementDTO.getId());
         if (advertisementOptional.isEmpty()){
             return "商品不存在";
         }
         Advertisement advertisement = advertisementOptional.get();
-        if (advertisementVO.getTitle() != null){
-            advertisement.setTitle(advertisementVO.getTitle());
+        if (advertisementDTO.getTitle() != null){
+            advertisement.setTitle(advertisementDTO.getTitle());
         }
-        if (advertisementVO.getContent() != null){
-            advertisement.setContent(advertisementVO.getContent());
+        if (advertisementDTO.getContent() != null){
+            advertisement.setContent(advertisementDTO.getContent());
         }
-        if (advertisementVO.getImgUrl() != null){
-            advertisement.setImageUrl(advertisementVO.getImgUrl());
+        if (advertisementDTO.getImgUrl() != null){
+            advertisement.setImageUrl(advertisementDTO.getImgUrl());
             advertisement.setLastImageChangeTime(new Date());
         }
-        if (advertisementVO.getProductId() != null){
-            Optional<Product> productOptional = productRepository.findById(advertisementVO.getProductId());
+        if (advertisementDTO.getProductId() != null){
+            Optional<Product> productOptional = productRepository.findById(advertisementDTO.getProductId());
             if (productOptional.isEmpty()){
                 return "商品不存在";
             }
@@ -76,32 +78,32 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public AdvertisementVO create(AdvertisementVO advertisementVO) {
+    public AdvertisementVO create(AdvertisementDTO advertisementDTO) {
         Account account = securityUtil.getCurrentUser();
         if (!account.getRole().toUpperCase().equals("ADMIN")) {
             return null;
         }
-        Advertisement advertisement = new Advertisement();
-        advertisement.setTitle(advertisementVO.getTitle());
-        advertisement.setContent(advertisementVO.getContent());
-        advertisement.setImageUrl(advertisementVO.getImgUrl());
+        Advertisement advertisement = advertisementDTO.toPO();
+        advertisement.setProduct(productRepository.findById(advertisementDTO.getProductId()).get());
         advertisement.setLastImageChangeTime(new Date());
-        if (advertisementVO.getImgUrl().startsWith("https") && !account.getUploadAdvertisementCoverCreates().isEmpty()) {
+
+        if (advertisementDTO.getImgUrl().startsWith("https") && !account.getUploadAdvertisementCoverCreates().isEmpty()) {
             account.getUploadAdvertisementCoverCreates().removeLast();
         }
-        Optional<Product> productOptional = productRepository.findById(advertisementVO.getProductId());
-        if (productOptional.isEmpty()){
-            return null;
-        }
-        Product product = productOptional.get();
-        advertisement.setProduct(product);
+//        Optional<Product> productOptional = productRepository.findById(advertisementDTO.getProductId());
+//        if (productOptional.isEmpty()){
+//            return null;
+//        }
+//        Product product = productOptional.get();
+//        advertisement.setProduct(product);
         advertisementRepository.save(advertisement);
-        AdvertisementVO vo = new AdvertisementVO();
-        vo.setId(advertisement.getId());
-        vo.setTitle(advertisement.getTitle());
-        vo.setContent(advertisement.getContent());
-        vo.setImgUrl(advertisement.getImageUrl());
-        vo.setProductId(advertisement.getProduct().getId());
+        AdvertisementVO vo = advertisementDTO.toVO();
+        vo.setId(advertisement.getId());//dto has no id
+//        vo.setId(advertisement.getId());
+//        vo.setTitle(advertisement.getTitle());
+//        vo.setContent(advertisement.getContent());
+//        vo.setImgUrl(advertisement.getImageUrl());
+//        vo.setProductId(advertisement.getProduct().getId());
         return vo;
     }
 
@@ -126,12 +128,12 @@ public AdvertisementVO getById(Integer id) {
         return null;
     }
     Advertisement advertisement = advertisementOptional.get();
-    AdvertisementVO vo = new AdvertisementVO();
-    vo.setId(advertisement.getId());
-    vo.setTitle(advertisement.getTitle());
-    vo.setContent(advertisement.getContent());
-    vo.setImgUrl(advertisement.getImageUrl());
-    vo.setProductId(advertisement.getProduct().getId());
+    AdvertisementVO vo = advertisement.toDTO().toVO();
+//    vo.setId(advertisement.getId());
+//    vo.setTitle(advertisement.getTitle());
+//    vo.setContent(advertisement.getContent());
+//    vo.setImgUrl(advertisement.getImageUrl());
+//    vo.setProductId(advertisement.getProduct().getId());
     return vo;
 }
 }
