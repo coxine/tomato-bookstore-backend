@@ -24,7 +24,7 @@ public class Specification {
     private String value;
 
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "FK_PROCUDT_SPECIFICATION"))
     private Product product;
 

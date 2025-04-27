@@ -159,32 +159,7 @@ public class ProductServiceImpl implements ProductService {
         if (!account.getRole().toUpperCase().equals("ADMIN")) {
             return "需要管理员权限";
         }
-//        return productRepository.findById(productDTO.getId())
-//                .map(existingProduct -> {
-//                    // Update product
-//                    BeanUtils.copyProperties(productDTO, existingProduct, "id");
-//                    Product updatedProduct = productRepository.save(existingProduct);
-//
-//                    // Update specifications
-//                    if (productDTO.getSpecifications() != null) {
-//                        // Delete existing specifications
-//                        specificationRepository.deleteByProductId(updatedProduct.getId());
-//
-//                        // Save new specifications
-//                        Set<Specification> specifications = productDTO.getSpecifications().stream()
-//                                .map(specVO -> {
-//                                    Specification spec = new Specification();
-//                                    BeanUtils.copyProperties(specVO, spec);
-//                                    spec.setProduct(updatedProduct);
-//                                    return spec;
-//                                })
-//                                .collect(Collectors.toSet());
-//                        specificationRepository.saveAll(specifications);
-//                    }
-//
-//                    return convertToProductVO(updatedProduct);
-//                })
-//                .orElse(null);
+
         Product product;
         Optional<Product> optionalProduct = productRepository.findById(productDTO.getId());
         if (optionalProduct.isPresent()) {
