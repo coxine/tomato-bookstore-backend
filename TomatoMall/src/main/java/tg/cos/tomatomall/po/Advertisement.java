@@ -29,7 +29,7 @@ public class Advertisement {
     @Column(name = "image_url", nullable = false, length = 500)
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "FK_PRODUCT_ADVERTISEMENT"))
     private Product product;
 

@@ -23,10 +23,8 @@ public class Specification {
     @Size(max = 255)
     private String value;
 
-//    @Column(name = "product_id", nullable = false)
-//    private Integer productId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "FK_PROCUDT_SPECIFICATION"))
     private Product product;
 

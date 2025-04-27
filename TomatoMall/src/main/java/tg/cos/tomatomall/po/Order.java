@@ -32,7 +32,7 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime = new Date();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "FK_ACCOUNT_ORDER"))
     private Account account;
 
