@@ -26,7 +26,7 @@ public class OrderItem {
     @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(name = "FK_PROCUDT_ORDERITEM"))
     private Product product;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 }
