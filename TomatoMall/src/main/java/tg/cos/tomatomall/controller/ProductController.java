@@ -48,9 +48,6 @@ public class ProductController {
         return Response.buildFailure("创建商品失败", "400");
     }
 
-    /**
-     * 更新商品信息
-     */
     @PutMapping
     public Response<?> updateProduct(@RequestBody ProductDTO productDTO) {
         String msg = productService.updateProduct(productDTO);
