@@ -234,7 +234,7 @@ public class ProductServiceImpl implements ProductService {
         }
         stockpileRepository.findByProductId(productId)
                 .map(stockpile -> {
-                    stockpile.setAmount(stockpile.getAmount());
+                    stockpile.setAmount(stockpileDTO.getAmount());
                     Stockpile updated = stockpileRepository.save(stockpile);
                     return convertToStockpileVO(updated);
                 });
