@@ -1,0 +1,16 @@
+package tg.cos.tomatomall.service;
+
+import tg.cos.tomatomall.dto.ChapterEditDTO;
+import tg.cos.tomatomall.vo.ChapterGetAllVO;
+import tg.cos.tomatomall.vo.ChapterGetVO;
+
+import java.io.IOException;
+import java.util.List;
+
+public interface ChapterService {
+    String addChapter(ChapterEditDTO chapter) throws IOException;
+    ChapterGetVO getChapter(Integer id);
+    String updateChapter(ChapterEditDTO chapter);
+    String deleteChapter(Integer id);
+    List<ChapterGetAllVO> getAllChapter(Integer id);
+}
