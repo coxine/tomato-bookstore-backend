@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @EnableScheduling
@@ -96,6 +97,7 @@ public class OrderServiceImpl implements OrderService {
             String form = alipayClient.pageExecute(request).getBody();
             // System.err.println(form);
             OrderPayVO res = new OrderPayVO();
+            res.setStatus(order.getStatus());
             res.setOrderId(orderId);
             res.setPaymentForm(form);
             res.setTotalAmount(order.getTotalAmount());
@@ -128,33 +130,48 @@ public class OrderServiceImpl implements OrderService {
             stockpile.setFrozen(stockpile.getFrozen() - item.getQuantity());
         }
     }
-        // 每5分钟执行一次
-        @Scheduled(fixedRate = 300000)
-        public void checkAndReleaseTimeoutOrders() {
-            System.out.println("checkAndReleaseTimeoutOrders");
-            // 获取30分钟前的时间
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.MINUTE, -30);
-            Date thirtyMinutesAgo = calendar.getTime();
-            
-            // 查找所有超时未支付的订单
-            List<Order> timeoutOrders = orderRepository.findByStatusAndCreateTimeBefore("PENDING", thirtyMinutesAgo);
-            
-            for (Order order : timeoutOrders) {
-                // 释放库存
-                for (OrderItem orderItem : order.getOrderItems()) {
-                    Product product = orderItem.getProduct();
-                    Stockpile stockpile = product.getStockpile();
-                    
-                    // 减少冻结数量
-                    stockpile.setFrozen(stockpile.getFrozen() - orderItem.getQuantity());
-                    stockpile.setAmount(stockpile.getAmount() + orderItem.getQuantity());
-                    stockpileRepository.save(stockpile);
-                }
+
+    @Override
+    public List<OrderPayVO> getUserOrders(Integer accountId) {
+        List<Order> orders = orderRepository.findByAccountId(accountId);
+        return orders.stream().map(order -> {
+            OrderPayVO vo = new OrderPayVO();
+            vo.setOrderId(order.getId());
+            vo.setTotalAmount(order.getTotalAmount());
+            vo.setPaymentMethod(order.getPaymentMethod());
+            vo.setStatus(order.getStatus());
+            vo.setTotalAmount(order.getTotalAmount());
+            return vo;
+        }).collect(Collectors.toList());
+    }
+
+    // 每5分钟执行一次
+    @Scheduled(fixedRate = 300000)
+    public void checkAndReleaseTimeoutOrders() {
+        System.out.println("checkAndReleaseTimeoutOrders");
+        // 获取30分钟前的时间
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, -30);
+        Date thirtyMinutesAgo = calendar.getTime();
+        
+        // 查找所有超时未支付的订单
+        List<Order> timeoutOrders = orderRepository.findByStatusAndCreateTimeBefore("PENDING", thirtyMinutesAgo);
+        
+        for (Order order : timeoutOrders) {
+            // 释放库存
+            for (OrderItem orderItem : order.getOrderItems()) {
+                Product product = orderItem.getProduct();
+                Stockpile stockpile = product.getStockpile();
                 
-                // 更新订单状态为已取消
-                order.setStatus("CANCELLED");
-                orderRepository.save(order);
+                // 减少冻结数量
+                stockpile.setFrozen(stockpile.getFrozen() - orderItem.getQuantity());
+                stockpile.setAmount(stockpile.getAmount() + orderItem.getQuantity());
+                stockpileRepository.save(stockpile);
             }
+            
+            // 更新订单状态为已取消
+            order.setStatus("CANCELLED");
+            orderRepository.save(order);
         }
+    }
 }

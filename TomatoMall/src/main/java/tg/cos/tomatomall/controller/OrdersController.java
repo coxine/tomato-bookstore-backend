@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import tg.cos.tomatomall.service.OrderService;
+import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.OrderPayVO;
 import tg.cos.tomatomall.vo.Response;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -18,7 +20,8 @@ import com.alipay.api.internal.util.*;
 @RestController
 @RequestMapping("/api/orders")
 public class OrdersController {
-
+    @Autowired
+    SecurityUtil securityUtil;
     @Autowired
     private OrderService orderService;
 
@@ -75,5 +78,12 @@ public class OrdersController {
     @GetMapping("/returnUrl")
     public String returnUrl() {
         return "支付成功了";
+    }
+
+    @GetMapping("/userOrder")
+    public Response<?> getUserOrders() {
+        Integer accountId=securityUtil.getCurrentUser().getId();
+        List<OrderPayVO> orders = orderService.getUserOrders(accountId);
+        return Response.buildSuccess(orders);
     }
 }

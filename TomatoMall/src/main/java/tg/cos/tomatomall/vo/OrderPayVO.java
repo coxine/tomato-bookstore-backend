@@ -12,5 +12,5 @@ public class OrderPayVO {
     Integer orderId;
     BigDecimal totalAmount;
     String paymentMethod;
-
+    String status;
 }
