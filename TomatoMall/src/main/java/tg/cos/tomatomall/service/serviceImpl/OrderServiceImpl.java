@@ -14,6 +14,8 @@ import tg.cos.tomatomall.repository.OrderRepository;
 import tg.cos.tomatomall.repository.StockpileRepository;
 import tg.cos.tomatomall.service.OrderService;
 import tg.cos.tomatomall.vo.OrderPayVO;
+import tg.cos.tomatomall.vo.OrderFormsVO;
+import tg.cos.tomatomall.vo.OrderItemFormVO;
 
 
 import com.alipay.api.*;
@@ -99,7 +101,6 @@ public class OrderServiceImpl implements OrderService {
             OrderPayVO res = new OrderPayVO();
             res.setStatus(order.getStatus());
             res.setOrderId(orderId);
-            res.setPaymentForm(form);
             res.setTotalAmount(order.getTotalAmount());
             res.setPaymentMethod(order.getPaymentMethod());
             return res;
@@ -132,15 +133,61 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderPayVO> getUserOrders(Integer accountId) {
+    public List<OrderFormsVO> getUserOrders(Integer accountId) {
         List<Order> orders = orderRepository.findByAccountId(accountId);
         return orders.stream().map(order -> {
-            OrderPayVO vo = new OrderPayVO();
+            OrderFormsVO vo = new OrderFormsVO();
             vo.setOrderId(order.getId());
             vo.setTotalAmount(order.getTotalAmount());
             vo.setPaymentMethod(order.getPaymentMethod());
             vo.setStatus(order.getStatus());
+            vo.setCreateTime(order.getCreateTime());
+            vo.setName(order.getName());
+            vo.setAddress(order.getAddress());
+            vo.setPhone(order.getPhone());
+            
+            // 转换订单项
+            List<OrderItemFormVO> orderItems = order.getOrderItems().stream().map(item -> {
+                OrderItemFormVO itemVO = new OrderItemFormVO();
+                itemVO.setProductId(item.getProduct().getId());
+                itemVO.setProductTitle(item.getProduct().getTitle());
+                itemVO.setQuantity(item.getQuantity());
+                itemVO.setPrice(item.getProduct().getPrice());
+                itemVO.setCover(item.getProduct().getCover());
+                return itemVO;
+            }).collect(Collectors.toList());
+            
+            vo.setOrderItems(orderItems);
+            return vo;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OrderFormsVO> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map(order -> {
+            OrderFormsVO vo = new OrderFormsVO();
+            vo.setOrderId(order.getId());
             vo.setTotalAmount(order.getTotalAmount());
+            vo.setPaymentMethod(order.getPaymentMethod());
+            vo.setStatus(order.getStatus());
+            vo.setCreateTime(order.getCreateTime());
+            vo.setName(order.getName());
+            vo.setAddress(order.getAddress());
+            vo.setPhone(order.getPhone());
+            
+            // 转换订单项
+            List<OrderItemFormVO> orderItems = order.getOrderItems().stream().map(item -> {
+                OrderItemFormVO itemVO = new OrderItemFormVO();
+                itemVO.setProductId(item.getProduct().getId());
+                itemVO.setProductTitle(item.getProduct().getTitle());
+                itemVO.setQuantity(item.getQuantity());
+                itemVO.setPrice(item.getProduct().getPrice());
+                itemVO.setCover(item.getProduct().getCover());
+                return itemVO;
+            }).collect(Collectors.toList());
+            
+            vo.setOrderItems(orderItems);
             return vo;
         }).collect(Collectors.toList());
     }

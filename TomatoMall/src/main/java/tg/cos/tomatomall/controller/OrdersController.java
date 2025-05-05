@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import tg.cos.tomatomall.service.OrderService;
 import tg.cos.tomatomall.util.SecurityUtil;
+import tg.cos.tomatomall.vo.OrderFormsVO;
 import tg.cos.tomatomall.vo.OrderPayVO;
 import tg.cos.tomatomall.vo.Response;
 
@@ -80,10 +81,20 @@ public class OrdersController {
         return "支付成功了";
     }
 
-    @GetMapping("/userOrder")
+    @GetMapping("/userOrders")
     public Response<?> getUserOrders() {
         Integer accountId=securityUtil.getCurrentUser().getId();
-        List<OrderPayVO> orders = orderService.getUserOrders(accountId);
+        List<OrderFormsVO> orders = orderService.getUserOrders(accountId);
+        return Response.buildSuccess(orders);
+    }
+
+    @GetMapping("/allOrders")
+    public Response<?> getAllOrders() {
+        // 检查是否是管理员
+        if (!securityUtil.getCurrentUser().getRole().toUpperCase().equals("ADMIN")) {
+            return Response.buildFailure("无权限访问", "400");
+        }
+        List<OrderFormsVO> orders = orderService.getAllOrders();
         return Response.buildSuccess(orders);
     }
 }

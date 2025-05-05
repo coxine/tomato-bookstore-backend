@@ -1,6 +1,7 @@
 package tg.cos.tomatomall.service;
 
 import tg.cos.tomatomall.vo.OrderPayVO;
+import tg.cos.tomatomall.vo.OrderFormsVO;
 import java.util.List;
 
 public interface OrderService {
@@ -8,5 +9,7 @@ public interface OrderService {
 
     void updateOrderStatus(String orderId, String alipayTradeNo, String amount,String status);
     
-    List<OrderPayVO> getUserOrders(Integer accountId);
+    List<OrderFormsVO> getUserOrders(Integer accountId);
+    
+    List<OrderFormsVO> getAllOrders();
 }
