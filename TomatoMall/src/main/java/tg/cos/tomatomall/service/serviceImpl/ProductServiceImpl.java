@@ -135,7 +135,8 @@ public class ProductServiceImpl implements ProductService {
             Set<Specification> specifications = productDTO.getSpecifications().stream()
                     .map(specVO -> {
                         Specification spec = new Specification();
-                        BeanUtils.copyProperties(specVO, spec);
+                        spec.setValue(specVO.getValue());
+                        spec.setItem(specVO.getItem());
                         spec.setProduct(savedProduct);
                         return spec;
                     })
