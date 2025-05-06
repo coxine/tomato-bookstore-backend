@@ -99,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
             String form = alipayClient.pageExecute(request).getBody();
             // System.err.println(form);
             OrderPayVO res = new OrderPayVO();
-            res.setStatus(order.getStatus());
+            res.setPaymentForm(form);
             res.setOrderId(orderId);
             res.setTotalAmount(order.getTotalAmount());
             res.setPaymentMethod(order.getPaymentMethod());
