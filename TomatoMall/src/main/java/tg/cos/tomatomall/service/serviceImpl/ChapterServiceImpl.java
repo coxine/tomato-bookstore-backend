@@ -63,7 +63,7 @@ public class ChapterServiceImpl implements ChapterService {
         }
         product.getChapters().add(chapterEntity);
         productRepository.save(product);
-        chapterRepository.save(chapterEntity);
+//        chapterRepository.save(chapterEntity);
         return "录入章节成功";
     }
 
