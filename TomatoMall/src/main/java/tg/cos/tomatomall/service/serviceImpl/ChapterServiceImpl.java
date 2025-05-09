@@ -52,6 +52,11 @@ public class ChapterServiceImpl implements ChapterService {
 
         if (chapter.getPrevious() != null) {
             chapterEntity.setPrevious(chapter.getPrevious());
+        }else {
+            Chapter last = product.getChapters().getLast();
+            int lastId = last.getId();
+            chapterEntity.setPrevious(lastId);
+            last.setNext(chapterEntity.getId());
         }
         if (chapter.getNext() != null) {
             chapterEntity.setNext(chapter.getNext());
