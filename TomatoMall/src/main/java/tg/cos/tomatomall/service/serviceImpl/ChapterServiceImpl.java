@@ -91,7 +91,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public String updateChapter(ChapterEditDTO chapter) {
+    public String updateChapter(ChapterEditDTO chapter) throws IOException {
         Optional<Chapter> chapterOptional = chapterRepository.findById(chapter.getChapterId());
         if (chapterOptional.isEmpty()) {
             return "查找不到该章节";
@@ -102,7 +102,7 @@ public class ChapterServiceImpl implements ChapterService {
             chapterEntity.setName(chapter.getName());
         }
         if (chapter.getContent() != null) {
-            chapterEntity.setContent(chapter.getContent());
+            chapterEntity.setContent(uploadFile(convertStringToMultipartFile(chapter.getContent())));
         }
         if (chapter.getPrevious() != null) {
             chapterEntity.setPrevious(chapter.getPrevious());

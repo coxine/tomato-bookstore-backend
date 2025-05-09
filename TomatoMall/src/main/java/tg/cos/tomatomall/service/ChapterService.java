@@ -10,7 +10,7 @@ import java.util.List;
 public interface ChapterService {
     String addChapter(ChapterEditDTO chapter) throws IOException;
     ChapterGetVO getChapter(Integer id);
-    String updateChapter(ChapterEditDTO chapter);
+    String updateChapter(ChapterEditDTO chapter) throws IOException;
     String deleteChapter(Integer id);
     List<ChapterGetAllVO> getAllChapter(Integer id);
 }
