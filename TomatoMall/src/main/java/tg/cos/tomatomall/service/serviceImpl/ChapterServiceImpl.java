@@ -137,8 +137,12 @@ public class ChapterServiceImpl implements ChapterService {
             ChapterGetAllVO chapterGetAllVO = new ChapterGetAllVO();
             chapterGetAllVO.setId(chapter.getId());
             chapterGetAllVO.setName(chapter.getName());
-            chapterGetAllVO.setPrevious(chapter.getPrevious());
-            chapterGetAllVO.setNext(chapter.getNext());
+            if (chapter.getPrevious() != null) {
+                chapterGetAllVO.setPrevious(chapter.getPrevious());
+            }
+            if (chapter.getNext() != null) {
+                chapterGetAllVO.setNext(chapter.getNext());
+            }
             chapterGetAllVO.setStatus(chapter.getStatus());
             chapterGetAllVO.setProductId(product.getId());
             chapterGetAllVOList.add(chapterGetAllVO);
