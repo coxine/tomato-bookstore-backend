@@ -43,6 +43,7 @@ public class ChapterServiceImpl implements ChapterService {
             return null;
         }
         Product product = productOptional.get();
+        boolean setLast = false;
 
         Chapter chapterEntity = new Chapter();
         chapterEntity.setName(chapter.getName());
@@ -56,14 +57,20 @@ public class ChapterServiceImpl implements ChapterService {
             Chapter last = product.getChapters().getLast();
             int lastId = last.getId();
             chapterEntity.setPrevious(lastId);
-            last.setNext(chapterEntity.getId());
+//            System.out.println(chapterEntity.getId());
+            setLast = true;
         }
         if (chapter.getNext() != null) {
             chapterEntity.setNext(chapter.getNext());
         }
         product.getChapters().add(chapterEntity);
+        chapterRepository.save(chapterEntity);
         productRepository.save(product);
-//        chapterRepository.save(chapterEntity);
+        if (setLast) {
+            product.getChapters().get(product.getChapters().size() - 2).setNext(chapterEntity.getId());
+            productRepository.save(product);
+        }
+
         return "录入章节成功";
     }
 
