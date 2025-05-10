@@ -50,6 +50,8 @@ public class Product {
     @Column(name = "detail", length = 500)
     @Size(max = 500)
     private String detail;
+    @Column(name = "ratePeopleNumber")
+    private Integer ratePeopleNumber;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Specification> specifications;

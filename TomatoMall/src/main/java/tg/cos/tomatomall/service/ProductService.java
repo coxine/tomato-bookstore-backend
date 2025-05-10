@@ -3,7 +3,6 @@ package tg.cos.tomatomall.service;
 import tg.cos.tomatomall.dto.ProductDTO;
 import tg.cos.tomatomall.dto.StockpileDTO;
 import tg.cos.tomatomall.vo.ProductVO;
-import tg.cos.tomatomall.vo.StockPileUpdateVO;
 
 import java.util.List;
 
@@ -15,4 +14,5 @@ public interface ProductService {
     String deleteProduct(Integer id);
     String updateStockpile(Integer productId, StockpileDTO stockpileDTO);
     StockpileDTO getStockpile(Integer productId);
+    float postRate(Integer productId, float rate);
 }

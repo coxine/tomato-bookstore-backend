@@ -96,4 +96,17 @@ public class ProductController {
         }
         return Response.buildFailure("商品不存在", "404");
     }
+
+    @PostMapping("/{productId}/rate/{rate}")
+    public Response<?> postRate(@PathVariable("productId") Integer productId,
+                                @PathVariable("rate") float rate) {
+        float newRate = productService.postRate(productId, rate);
+        if (newRate == -1 ){
+            return Response.buildFailure("查找不到该商品","400");
+        }else if (newRate == -2 ){
+            return Response.buildFailure("评分应该在0-10范围内","400");
+        }else {
+            return Response.buildSuccess(newRate);
+        }
+    }
 }

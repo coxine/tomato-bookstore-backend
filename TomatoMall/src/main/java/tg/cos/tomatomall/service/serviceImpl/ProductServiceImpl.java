@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tg.cos.tomatomall.dto.ProductDTO;
-import tg.cos.tomatomall.dto.SpecificationDTO;
 import tg.cos.tomatomall.dto.StockpileDTO;
 import tg.cos.tomatomall.po.*;
 import tg.cos.tomatomall.repository.*;
@@ -14,7 +13,6 @@ import tg.cos.tomatomall.service.ProductService;
 import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.ProductVO;
 import tg.cos.tomatomall.vo.SpecificationVO;
-import tg.cos.tomatomall.vo.StockPileUpdateVO;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -278,5 +276,30 @@ public class ProductServiceImpl implements ProductService {
         StockpileDTO vo = new StockpileDTO();
         BeanUtils.copyProperties(stockpile, vo);
         return vo;
+    }
+
+
+    @Override
+    public float postRate(Integer productId, float rate) {
+        if (rate < 0 || rate > 10) {
+            return -2;
+        }
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isEmpty()) {
+            return -1;
+        }
+        Product product = optionalProduct.get();
+        Integer number = product.getRatePeopleNumber();
+        if (number == null){
+            number = 0;
+        }
+        float newRate = number * product.getRate();
+        newRate += rate;
+        number++;
+        newRate /= number;
+        product.setRate(newRate);
+        product.setRatePeopleNumber(number);
+        productRepository.save(product);
+        return newRate;
     }
 }
