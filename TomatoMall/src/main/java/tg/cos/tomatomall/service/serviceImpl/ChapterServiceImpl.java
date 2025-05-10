@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tg.cos.tomatomall.dto.ChapterEditDTO;
+import tg.cos.tomatomall.po.Account;
 import tg.cos.tomatomall.po.Chapter;
 import tg.cos.tomatomall.po.Product;
 import tg.cos.tomatomall.repository.ChapterRepository;
 import tg.cos.tomatomall.repository.ProductRepository;
 import tg.cos.tomatomall.service.ChapterService;
 import tg.cos.tomatomall.util.OSSUtil;
+import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.ChapterGetAllVO;
 import tg.cos.tomatomall.vo.ChapterGetVO;
 
@@ -35,9 +37,15 @@ public class ChapterServiceImpl implements ChapterService {
     private ProductRepository productRepository;
     @Autowired
     private OSSUtil ossUtil;
+    @Autowired
+    SecurityUtil securityUtil;
 
     @Override
     public String addChapter(ChapterEditDTO chapter) throws IOException {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().equalsIgnoreCase("admin")) {
+            return "权限不足";
+        }
         Optional<Product> productOptional = productRepository.findById(chapter.getProductId());
         if (productOptional.isEmpty()) {
             return "录入章节失败:查找不到该商品";
@@ -104,6 +112,10 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public String updateChapter(ChapterEditDTO chapter) throws IOException {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().equalsIgnoreCase("admin")) {
+            return "权限不足";
+        }
         Optional<Chapter> chapterOptional = chapterRepository.findById(chapter.getChapterId());
         if (chapterOptional.isEmpty()) {
             return "查找不到该章节";
@@ -137,6 +149,10 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public String deleteChapter(Integer id) {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().equalsIgnoreCase("admin")) {
+            return "权限不足";
+        }
         Optional<Chapter> chapterOptional = chapterRepository.findById(id);
         if (chapterOptional.isEmpty()) {
             return "查找不到该章节";
