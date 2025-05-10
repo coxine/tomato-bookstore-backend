@@ -6,13 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import tg.cos.tomatomall.po.Order;
-import tg.cos.tomatomall.po.OrderItem;
-import tg.cos.tomatomall.po.Product;
-import tg.cos.tomatomall.po.Stockpile;
+import tg.cos.tomatomall.po.*;
 import tg.cos.tomatomall.repository.OrderRepository;
 import tg.cos.tomatomall.repository.StockpileRepository;
 import tg.cos.tomatomall.service.OrderService;
+import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.OrderPayVO;
 import tg.cos.tomatomall.vo.OrderFormsVO;
 import tg.cos.tomatomall.vo.OrderItemFormVO;
@@ -40,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     StockpileRepository stockpileRepository;
+
+    @Autowired
+    SecurityUtil securityUtil;
 
     @Value("${alipay.app-id}")
     private String APPID;
@@ -164,6 +165,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderFormsVO> getAllOrders() {
+        Account account = securityUtil.getCurrentUser();
+        if (!account.getRole().equalsIgnoreCase("admin")) {
+            return null;
+        }
         List<Order> orders = orderRepository.findAll();
         return orders.stream().map(order -> {
             OrderFormsVO vo = new OrderFormsVO();
