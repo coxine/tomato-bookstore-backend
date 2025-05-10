@@ -123,6 +123,11 @@ public class ChapterServiceImpl implements ChapterService {
             chapterEntity.setNext(chapter.getNext());
         }
         if (chapter.getStatus() != null) {
+            if (chapter.getStatus().equalsIgnoreCase("FREE") ||
+                    chapter.getStatus().equalsIgnoreCase("CHARGED") ||
+                    chapter.getStatus().equalsIgnoreCase("LOCK")) {
+                return "更新章节失败:输入的状态有误";
+            }
             chapterEntity.setStatus(chapter.getStatus());
         }
         chapterRepository.save(chapterEntity);

@@ -37,7 +37,7 @@ public class ChapterController {
         }else if (result.equals("更新章节成功")){
             return Response.buildSuccess(result);
         }else {
-            return Response.buildFailure("更新章节失败","400");
+            return Response.buildFailure(result,"400");
         }
     }
 
