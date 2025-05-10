@@ -281,6 +281,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public float postRate(Integer productId, float rate) {
+        Account account = securityUtil.getCurrentUser();
+        Set<Integer> rateProducts = account.getRateProducts();
+        if (rateProducts == null) {
+            rateProducts = new HashSet<>();
+        }
+        if (rateProducts.contains(productId)) {
+            return -3;
+        }
         if (rate < 0 || rate > 10) {
             return -2;
         }
@@ -300,6 +308,9 @@ public class ProductServiceImpl implements ProductService {
         product.setRate(newRate);
         product.setRatePeopleNumber(number);
         productRepository.save(product);
+        rateProducts.add(productId);
+        account.setRateProducts(rateProducts);
+        accountRepository.save(account);
         return newRate;
     }
 }
