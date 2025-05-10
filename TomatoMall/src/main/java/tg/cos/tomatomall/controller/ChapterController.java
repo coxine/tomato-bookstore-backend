@@ -24,7 +24,7 @@ public class ChapterController {
         if (result.equals("录入章节成功")) {
             return Response.buildSuccess(result);
         }else {
-            return Response.buildFailure("录入章节失败","400");
+            return Response.buildFailure(result,"400");
         }
     }
 

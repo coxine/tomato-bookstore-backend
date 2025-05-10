@@ -40,7 +40,7 @@ public class ChapterServiceImpl implements ChapterService {
     public String addChapter(ChapterEditDTO chapter) throws IOException {
         Optional<Product> productOptional = productRepository.findById(chapter.getProductId());
         if (productOptional.isEmpty()) {
-            return null;
+            return "录入章节失败:查找不到该商品";
         }
         Product product = productOptional.get();
         boolean setLast = false;
@@ -49,6 +49,11 @@ public class ChapterServiceImpl implements ChapterService {
         chapterEntity.setName(chapter.getName());
         chapterEntity.setContent(uploadFile(convertStringToMultipartFile(chapter.getContent())));
         chapterEntity.setProduct(product);
+        if (chapter.getStatus().equalsIgnoreCase("FREE") ||
+                chapter.getStatus().equalsIgnoreCase("CHARGED") ||
+                chapter.getStatus().equalsIgnoreCase("LOCK")) {
+            return "录入章节失败:输入的状态有误";
+        }
         chapterEntity.setStatus(chapter.getStatus());
 
         if (chapter.getPrevious() != null) {
