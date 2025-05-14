@@ -63,7 +63,6 @@ public class OrdersController {
             String orderId = params.get("out_trade_no"); // 您的订单号
             String alipayTradeNo = params.get("trade_no"); // 支付宝交易号
             String amount = params.get("total_amount"); // 支付金额
-
             // 更新订单状态（注意幂等性，防止重复处理）
             orderService.updateOrderStatus(orderId, alipayTradeNo, amount,"SUCCESS");
 

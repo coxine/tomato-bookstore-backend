@@ -5,6 +5,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
 import tg.cos.tomatomall.dto.ProductDTO;
 import tg.cos.tomatomall.dto.StockpileDTO;
 import tg.cos.tomatomall.po.*;
@@ -13,6 +15,7 @@ import tg.cos.tomatomall.service.ProductService;
 import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.ProductVO;
 import tg.cos.tomatomall.vo.SpecificationVO;
+import tg.cos.tomatomall.vo.TagVO;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,6 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final SpecificationRepository specificationRepository;
     private final StockpileRepository stockpileRepository;
+    private final TagRepository tagRepository;
 
     @Autowired
     SecurityUtil securityUtil;
@@ -64,12 +68,23 @@ public class ProductServiceImpl implements ProductService {
             if (product.getDetail() != null) {
                 productVO.setDetail(product.getDetail());
             }
+            
+            // 处理标签
+            if (product.getTags() != null && !product.getTags().isEmpty()) {
+                List<TagVO> tagVOs = product.getTags().stream()
+                    .map(tag -> {
+                        TagVO tagVO = new TagVO();
+                        tagVO.setId(tag.getId());
+                        tagVO.setName(tag.getName());
+                        return tagVO;
+                    })
+                    .collect(Collectors.toList());
+                productVO.setTags(tagVOs);
+            }
+            
             result.add(productVO);
         }
         return result;
-//        return productRepository.findAll().stream()
-//                .map(this::convertToProductVO)
-//                .collect(Collectors.toList());
     }
 
     @Override
@@ -104,11 +119,21 @@ public class ProductServiceImpl implements ProductService {
         if (product.getDetail() != null) {
             productVO.setDetail(product.getDetail());
         }
+        
+        // 处理标签
+        if (product.getTags() != null && !product.getTags().isEmpty()) {
+            List<TagVO> tagVOs = product.getTags().stream()
+                .map(tag -> {
+                    TagVO tagVO = new TagVO();
+                    tagVO.setId(tag.getId());
+                    tagVO.setName(tag.getName());
+                    return tagVO;
+                })
+                .collect(Collectors.toList());
+            productVO.setTags(tagVOs);
+        }
+        
         return productVO;
-
-//        return productRepository.findById(id)
-//                .map(this::convertToProductVO)
-//                .orElse(null);
     }
 
     @Override
@@ -126,6 +151,21 @@ public class ProductServiceImpl implements ProductService {
             account.getUploadProductCoverCreates().removeLast();
         }
         accountRepository.save(account);
+        
+        // 处理标签
+        if (productDTO.getTags() != null && !productDTO.getTags().isEmpty()) {
+            List<Tag> tags = new ArrayList<>();
+            for (TagVO tagVO : productDTO.getTags()) {
+                Tag tag;
+                    // 按名称查找，如果不存在则创建
+                    if(tagRepository.findByName(tagVO.getName()).isPresent())
+                        tag=tagRepository.findByName(tagVO.getName()).get();
+                    else return null;
+                tags.add(tag);
+            }
+            product.setTags(tags);
+        }
+        
         Product savedProduct = productRepository.save(product);
 
         // Save specifications
@@ -153,6 +193,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public String updateProduct(ProductDTO productDTO) {
         Account account = securityUtil.getCurrentUser();
         if (!account.getRole().toUpperCase().equals("ADMIN")) {
@@ -181,6 +222,20 @@ public class ProductServiceImpl implements ProductService {
             }
             product.setSpecifications(specifications);
         }
+
+        // 处理标签
+
+        if (productDTO.getTags() != null ) {
+            List<Tag> tags = new ArrayList<>();
+            for (TagVO tagVO : productDTO.getTags()) {
+                Tag tag;
+                if(tagRepository.findById(tagVO.getId()).isPresent())
+                    tag=tagRepository.findById(tagVO.getId()).get();
+                else return null;
+                tags.add(tag);
+            }
+            product.setTags(tags);
+        }
         if (productDTO.getCover() != null) {
             product.setCover(productDTO.getCover());
             product.setLastChangeCover(new Date());
@@ -201,6 +256,7 @@ public class ProductServiceImpl implements ProductService {
             product.setDescription(productDTO.getDescription());
         }
         productRepository.save(product);
+        
         return "更新成功";
     }
 
@@ -215,6 +271,7 @@ public class ProductServiceImpl implements ProductService {
         if (!optionalProduct.isPresent()) {
             return "商品不存在";
         }
+
         // Delete specifications first
         specificationRepository.deleteByProductId(id);
         // Delete stockpile
@@ -258,10 +315,19 @@ public class ProductServiceImpl implements ProductService {
                     .map(this::convertToSpecificationVO)
                     .collect(Collectors.toList()));
         }
-
-        // Set stockpile
-//        stockpileRepository.findByProductId(product.getId())
-//                .ifPresent(stock -> vo.setStockpile(convertToStockpileVO(stock)));
+        
+        // 处理标签
+        if (product.getTags() != null && !product.getTags().isEmpty()) {
+            List<TagVO> tagVOs = product.getTags().stream()
+                .map(tag -> {
+                    TagVO tagVO = new TagVO();
+                    tagVO.setId(tag.getId());
+                    tagVO.setName(tag.getName());
+                    return tagVO;
+                })
+                .collect(Collectors.toList());
+            vo.setTags(tagVOs);
+        }
 
         return vo;
     }

@@ -7,7 +7,6 @@ import tg.cos.tomatomall.dto.ProductDTO;
 import tg.cos.tomatomall.vo.ProductVO;
 import tg.cos.tomatomall.vo.Response;
 import tg.cos.tomatomall.dto.StockpileDTO;
-import tg.cos.tomatomall.vo.StockPileUpdateVO;
 
 @RestController
 @RequestMapping("/api/products")

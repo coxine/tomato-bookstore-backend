@@ -2,11 +2,10 @@ package tg.cos.tomatomall.vo;
 
 import lombok.Getter;
 import lombok.Setter;
-import tg.cos.tomatomall.dto.SpecificationDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
+
 
 
 @Getter
@@ -20,5 +19,5 @@ public class ProductVO {
     private String cover;
     private String detail;
     private List<SpecificationVO> specifications;
-
+    private List<TagVO> tags;
 }

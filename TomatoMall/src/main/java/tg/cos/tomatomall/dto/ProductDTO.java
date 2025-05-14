@@ -9,8 +9,9 @@ import tg.cos.tomatomall.vo.SpecificationVO;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
+import tg.cos.tomatomall.vo.TagVO;
 @Getter
 @Setter
 public class ProductDTO {
@@ -23,6 +24,7 @@ public class ProductDTO {
     private String detail;
     private Set<SpecificationVO> specifications;
     private StockpileDTO stockpile;
+    private List<TagVO> tags;
 
 //    public Product toPO(){
 //        Product product = new Product();
