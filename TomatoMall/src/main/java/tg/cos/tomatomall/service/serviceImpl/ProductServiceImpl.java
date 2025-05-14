@@ -147,7 +147,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         BeanUtils.copyProperties(productDTO, product);
         product.setLastChangeCover(new Date());
-        if (productDTO.getCover().startsWith("https") && !account.getUploadProductCoverCreates().isEmpty()) {
+        if (productDTO.getCover()!=null&&productDTO.getCover().startsWith("https") && !account.getUploadProductCoverCreates().isEmpty()) {
             account.getUploadProductCoverCreates().removeLast();
         }
         accountRepository.save(account);
@@ -158,8 +158,8 @@ public class ProductServiceImpl implements ProductService {
             for (TagVO tagVO : productDTO.getTags()) {
                 Tag tag;
                     // 按名称查找，如果不存在则创建
-                    if(tagRepository.findByName(tagVO.getName()).isPresent())
-                        tag=tagRepository.findByName(tagVO.getName()).get();
+                    if(tagRepository.findById(tagVO.getId()).isPresent())
+                        tag=tagRepository.findById(tagVO.getId()).get();
                     else return null;
                 tags.add(tag);
             }
@@ -378,5 +378,20 @@ public class ProductServiceImpl implements ProductService {
         account.setRateProducts(rateProducts);
         accountRepository.save(account);
         return newRate;
+    }
+
+    @Override
+    public List<ProductVO> getProductsByTagId(Integer tagId) {
+        Optional<Tag> tagOptional = tagRepository.findById(tagId);
+        if (tagOptional.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Tag tag = tagOptional.get();
+        List<Product> products = tag.getProducts();
+        
+        return products.stream()
+            .map(this::convertToProductVO)
+            .collect(Collectors.toList());
     }
 }

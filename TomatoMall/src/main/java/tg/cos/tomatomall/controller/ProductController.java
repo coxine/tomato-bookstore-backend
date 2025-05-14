@@ -7,6 +7,7 @@ import tg.cos.tomatomall.dto.ProductDTO;
 import tg.cos.tomatomall.vo.ProductVO;
 import tg.cos.tomatomall.vo.Response;
 import tg.cos.tomatomall.dto.StockpileDTO;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -61,13 +62,11 @@ public class ProductController {
      */
     @DeleteMapping("/{id}")
     public Response<?> deleteProduct(@PathVariable("id") Integer id) {
-        String res = productService.deleteProduct(id);
-        if (res.equals("删除成功")){
-            return Response.buildSuccess("删除成功");
-
-        }else {
-            return Response.buildFailure(res,"400");
+        String result = productService.deleteProduct(id);
+        if (result.equals("删除成功")) {
+            return Response.buildSuccess(result);
         }
+        return Response.buildFailure(result, "400");
     }
 
     /**
@@ -107,5 +106,14 @@ public class ProductController {
         }else {
             return Response.buildSuccess(newRate);
         }
+    }
+
+    /**
+     * 根据标签ID获取商品列表
+     */
+    @GetMapping("/byTag/{tagId}")
+    public Response<?> getProductsByTagId(@PathVariable("tagId") Integer tagId) {
+        List<ProductVO> products = productService.getProductsByTagId(tagId);
+        return Response.buildSuccess(products);
     }
 }

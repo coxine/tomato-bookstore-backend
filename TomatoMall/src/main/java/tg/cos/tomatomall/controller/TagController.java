@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import tg.cos.tomatomall.dto.TagDTO;
 import tg.cos.tomatomall.service.TagService;
+import tg.cos.tomatomall.util.SecurityUtil;
 import tg.cos.tomatomall.vo.Response;
 import tg.cos.tomatomall.vo.TagVO;
 
@@ -13,7 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {
-
+    @Autowired
+    SecurityUtil securityUtil;
     @Autowired
     private TagService tagService;
 
@@ -43,6 +45,9 @@ public class TagController {
      */
     @PostMapping
     public Response<?> createTag(@RequestBody TagDTO tagDTO) {
+        if (!securityUtil.getCurrentUser().getRole().toUpperCase().equals("ADMIN")) {
+            return Response.buildFailure("无权限访问", "400");
+        }
         String result = tagService.createTag(tagDTO);
         if (result.equals("创建成功")) {
             return Response.buildSuccess(result);
@@ -68,6 +73,9 @@ public class TagController {
      */
     @DeleteMapping("/{id}")
     public Response<?> deleteTag(@PathVariable("id") Integer id) {
+        if (!securityUtil.getCurrentUser().getRole().toUpperCase().equals("ADMIN")) {
+            return Response.buildFailure("无权限访问", "400");
+        }
         String result = tagService.deleteTag(id);
         if (result.equals("删除成功")) {
             return Response.buildSuccess(result);

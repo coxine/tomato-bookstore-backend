@@ -15,4 +15,5 @@ public interface ProductService {
     String updateStockpile(Integer productId, StockpileDTO stockpileDTO);
     StockpileDTO getStockpile(Integer productId);
     float postRate(Integer productId, float rate);
+    List<ProductVO> getProductsByTagId(Integer tagId);
 }
