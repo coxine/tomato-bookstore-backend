@@ -103,6 +103,8 @@ public class ProductController {
             return Response.buildFailure("查找不到该商品","400");
         }else if (newRate == -2 ){
             return Response.buildFailure("评分应该在0-10范围内","400");
+        }else if(newRate == -3){
+            return Response.buildFailure("该用户已评分","400");
         }else {
             return Response.buildSuccess(newRate);
         }
