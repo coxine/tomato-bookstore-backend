@@ -63,7 +63,7 @@ public class ChapterServiceImpl implements ChapterService {
         chapterEntity.setProduct(product);
         if (chapter.getStatus().equalsIgnoreCase("FREE") ||
                 chapter.getStatus().equalsIgnoreCase("CHARGED") ||
-                chapter.getStatus().equalsIgnoreCase("LOCK")) {
+                chapter.getStatus().equalsIgnoreCase("LOCKED")) {
             return "录入章节失败:输入的状态有误";
         }
         chapterEntity.setStatus(chapter.getStatus());
@@ -115,7 +115,7 @@ public class ChapterServiceImpl implements ChapterService {
             chapterGetVO.setContent(getFile(chapter.getContent()));
         }else if (chapter.getStatus().equals("CHARGED")) {
             chapterGetVO.setContent("该章节未购买");
-        }else if (chapter.getStatus().equals("LOCK")) {
+        }else if (chapter.getStatus().equals("LOCKED")) {
             chapterGetVO.setContent("该章节已锁定");
         }
 
@@ -149,7 +149,7 @@ public class ChapterServiceImpl implements ChapterService {
         if (chapter.getStatus() != null) {
             if (chapter.getStatus().equalsIgnoreCase("FREE") ||
                     chapter.getStatus().equalsIgnoreCase("CHARGED") ||
-                    chapter.getStatus().equalsIgnoreCase("LOCK")) {
+                    chapter.getStatus().equalsIgnoreCase("LOCKED")) {
                 return "更新章节失败:输入的状态有误";
             }
             chapterEntity.setStatus(chapter.getStatus());
