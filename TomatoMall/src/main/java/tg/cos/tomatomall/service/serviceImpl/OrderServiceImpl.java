@@ -175,9 +175,11 @@ public class OrderServiceImpl implements OrderService {
                         chapterVO.setProductId(chapter.getProduct().getId());
                         chapterVO.setStatus(chapter.getStatus());
                         chapterVO.setId(chapter.getId());
-                        chapterVO.setNext(chapter.getNext());
+                        Integer next = chapter.getNext();
+                        Integer previous = chapter.getPrevious();
+                        chapterVO.setNext(next != null ? next : 0);
                         chapterVO.setName(chapter.getName());
-                        chapterVO.setPrevious(chapter.getPrevious());
+                        chapterVO.setPrevious(previous != null ? previous : 0);
                         return chapterVO;
                     }).toList();
                     itemVO.setChapters(chapters);
@@ -225,9 +227,11 @@ public class OrderServiceImpl implements OrderService {
                         chapterVO.setProductId(chapter.getProduct().getId());
                         chapterVO.setStatus(chapter.getStatus());
                         chapterVO.setId(chapter.getId());
-                        chapterVO.setNext(chapter.getNext());
+                        Integer next = chapter.getNext();
+                        Integer previous = chapter.getPrevious();
+                        chapterVO.setNext(next != null ? next : 0);
                         chapterVO.setName(chapter.getName());
-                        chapterVO.setPrevious(chapter.getPrevious());
+                        chapterVO.setPrevious(previous != null ? previous : 0);
                         return chapterVO;
                     }).toList();
                     itemVO.setChapters(chapters);
