@@ -20,6 +20,8 @@ import tg.cos.tomatomall.vo.TagVO;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static tg.cos.tomatomall.enums.ProductPostRateEnum.*;
+
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -353,14 +355,14 @@ public class ProductServiceImpl implements ProductService {
             rateProducts = new HashSet<>();
         }
         if (rateProducts.contains(productId)) {
-            return -3;
+            return REPEATED.getValue();
         }
         if (rate < 0 || rate > 10) {
-            return -2;
+            return OUTRANGE.getValue();
         }
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if (optionalProduct.isEmpty()) {
-            return -1;
+            return FINDFAIL.getValue();
         }
         Product product = optionalProduct.get();
         Integer number = product.getRatePeopleNumber();

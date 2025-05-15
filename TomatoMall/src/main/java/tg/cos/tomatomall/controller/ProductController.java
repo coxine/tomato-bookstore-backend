@@ -7,7 +7,10 @@ import tg.cos.tomatomall.dto.ProductDTO;
 import tg.cos.tomatomall.vo.ProductVO;
 import tg.cos.tomatomall.vo.Response;
 import tg.cos.tomatomall.dto.StockpileDTO;
+
 import java.util.List;
+
+import static tg.cos.tomatomall.enums.ProductPostRateEnum.*;
 
 @RestController
 @RequestMapping("/api/products")
@@ -99,13 +102,13 @@ public class ProductController {
     public Response<?> postRate(@PathVariable("productId") Integer productId,
                                 @PathVariable("rate") float rate) {
         float newRate = productService.postRate(productId, rate);
-        if (newRate == -1 ){
-            return Response.buildFailure("查找不到该商品","400");
-        }else if (newRate == -2 ){
-            return Response.buildFailure("评分应该在0-10范围内","400");
-        }else if(newRate == -3){
-            return Response.buildFailure("该用户已评分","400");
-        }else {
+        if (newRate == FINDFAIL.getValue()) {
+            return Response.buildFailure("商品不存在", "400");
+        } else if (newRate == OUTRANGE.getValue()) {
+            return Response.buildFailure("评分应该在0-10范围内", "400");
+        } else if (newRate == REPEATED.getValue()) {
+            return Response.buildFailure("您已评分,不可重复评分", "400");
+        } else {
             return Response.buildSuccess(newRate);
         }
     }

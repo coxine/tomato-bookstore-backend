@@ -32,7 +32,7 @@ public class ChapterController {
     public Response<?> updateChapter(@PathVariable("chapterId") Integer chapterId, @RequestBody ChapterEditDTO chapter) throws IOException {
         chapter.setChapterId(chapterId);
         String result = chapterService.updateChapter(chapter);
-        if (result.equals("查找不到章节")){
+        if (result.equals("章节不存在")){
             return Response.buildFailure(result,"400");
         }else if (result.equals("更新章节成功")){
             return Response.buildSuccess(result);
@@ -46,7 +46,7 @@ public class ChapterController {
         String result = chapterService.deleteChapter(chapterId);
         if (result.equals("删除章节成功")){
             return Response.buildSuccess(result);
-        }else if (result.equals("查找不到章节")){
+        }else if (result.equals("章节不存在")){
             return Response.buildFailure(result,"400");
         }else {
             return Response.buildFailure("删除章节失败","400");
