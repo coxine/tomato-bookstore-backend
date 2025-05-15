@@ -78,7 +78,7 @@ public class ChapterController {
     }
 
     @PostMapping("/{productId}/chapter/checkout")
-    public Response<?> checkout(@PathVariable("productId") Integer productId, ChapterCheckoutDTO chapterCheckoutDTO){
+    public Response<?> checkout(@PathVariable("productId") Integer productId, @RequestBody ChapterCheckoutDTO chapterCheckoutDTO){
         CartCheckOutOutputVO res = chapterService.checkout(productId, chapterCheckoutDTO);
         if (res != null){
             return Response.buildSuccess(res);
