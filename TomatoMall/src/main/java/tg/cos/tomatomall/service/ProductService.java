@@ -17,4 +17,5 @@ public interface ProductService {
     float postRate(Integer productId, float rate);
     List<ProductVO> getProductsByTagId(Integer tagId);
     List<ProductVO> getProductsByRatingDesc();
+    List<ProductVO> getTopNProductsByRating(Integer n);
 }

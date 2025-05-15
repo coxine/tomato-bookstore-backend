@@ -455,4 +455,24 @@ public class ProductServiceImpl implements ProductService {
             .map(this::convertToProductVO)
             .collect(Collectors.toList());
     }
+
+    @Override
+    public List<ProductVO> getTopNProductsByRating(Integer n) {
+        if (n <= 0) {
+            return Collections.emptyList();
+        }
+        
+        List<Product> products = productRepository.findAll();
+        
+        // 按评分从高到低排序
+        products.sort((p1, p2) -> Float.compare(p2.getRate(), p1.getRate()));
+        
+        // 取前n个，如果商品总数小于n，则取所有商品
+        int limit = Math.min(n, products.size());
+        
+        return products.stream()
+            .limit(limit)
+            .map(this::convertToProductVO)
+            .collect(Collectors.toList());
+    }
 }

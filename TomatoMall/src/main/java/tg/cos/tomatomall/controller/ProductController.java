@@ -130,4 +130,17 @@ public class ProductController {
         List<ProductVO> products = productService.getProductsByRatingDesc();
         return Response.buildSuccess(products);
     }
+
+    /**
+     * 获取按评分从高到低排序的前N个商品
+     */
+    @GetMapping("/byRating/{num}")
+    public Response<?> getTopNProductsByRating(@PathVariable("num") Integer num) {
+        if (num <= 0) {
+            return Response.buildFailure("数量必须大于0", "400");
+        }
+        
+        List<ProductVO> products = productService.getTopNProductsByRating(num);
+        return Response.buildSuccess(products);
+    }
 }
