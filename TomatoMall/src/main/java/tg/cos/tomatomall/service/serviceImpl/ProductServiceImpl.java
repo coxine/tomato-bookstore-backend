@@ -83,7 +83,6 @@ public class ProductServiceImpl implements ProductService {
                     .collect(Collectors.toList());
                 productVO.setTags(tagVOs);
             }
-            
             result.add(productVO);
         }
         return result;
@@ -384,6 +383,7 @@ public class ProductServiceImpl implements ProductService {
     private SpecificationVO convertToSpecificationVO(Specification specification) {
         SpecificationVO vo = new SpecificationVO();
         BeanUtils.copyProperties(specification, vo);
+        vo.setProductId(specification.getProduct().getId());
         return vo;
     }
 
