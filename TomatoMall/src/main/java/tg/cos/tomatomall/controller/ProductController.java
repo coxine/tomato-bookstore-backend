@@ -121,4 +121,13 @@ public class ProductController {
         List<ProductVO> products = productService.getProductsByTagId(tagId);
         return Response.buildSuccess(products);
     }
+
+    /**
+     * 获取按评分从高到低排序的商品列表
+     */
+    @GetMapping("/byRating")
+    public Response<?> getProductsByRatingDesc() {
+        List<ProductVO> products = productService.getProductsByRatingDesc();
+        return Response.buildSuccess(products);
+    }
 }

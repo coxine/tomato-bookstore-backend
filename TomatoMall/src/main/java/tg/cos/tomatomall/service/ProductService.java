@@ -16,4 +16,5 @@ public interface ProductService {
     StockpileDTO getStockpile(Integer productId);
     float postRate(Integer productId, float rate);
     List<ProductVO> getProductsByTagId(Integer tagId);
+    List<ProductVO> getProductsByRatingDesc();
 }

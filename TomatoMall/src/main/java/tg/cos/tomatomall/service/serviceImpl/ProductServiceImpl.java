@@ -443,4 +443,16 @@ public class ProductServiceImpl implements ProductService {
             .map(this::convertToProductVO)
             .collect(Collectors.toList());
     }
+
+    @Override
+    public List<ProductVO> getProductsByRatingDesc() {
+        List<Product> products = productRepository.findAll();
+        
+        // 按评分从高到低排序
+        products.sort((p1, p2) -> Float.compare(p2.getRate(), p1.getRate()));
+        
+        return products.stream()
+            .map(this::convertToProductVO)
+            .collect(Collectors.toList());
+    }
 }
