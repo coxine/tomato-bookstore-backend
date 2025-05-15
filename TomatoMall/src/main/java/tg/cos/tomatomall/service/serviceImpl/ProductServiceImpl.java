@@ -155,15 +155,38 @@ public class ProductServiceImpl implements ProductService {
         accountRepository.save(account);
         
         // 处理标签
-        if (productDTO.getTags() != null && !productDTO.getTags().isEmpty()) {
+        if (productDTO.getTags() != null ) {
             List<Tag> tags = new ArrayList<>();
             for (TagVO tagVO : productDTO.getTags()) {
-                Tag tag;
-                    // 按名称查找，如果不存在则创建
-                    if(tagRepository.findById(tagVO.getId()).isPresent())
-                        tag=tagRepository.findById(tagVO.getId()).get();
-                    else return null;
-                tags.add(tag);
+                Tag tag = null;
+                
+                // 情况1: 有ID，按ID查找
+                if (tagVO.getId() != null) {
+                    Optional<Tag> optionalTag = tagRepository.findById(tagVO.getId());
+                    if (optionalTag.isPresent()) {
+                        tag = optionalTag.get();
+                    }
+                }
+                
+                // 情况2: 有name，按name查找
+                if (tag == null && tagVO.getName() != null && !tagVO.getName().isEmpty()) {
+                    Optional<Tag> optionalTag = tagRepository.findByName(tagVO.getName());
+                    if (optionalTag.isPresent()) {
+                        tag = optionalTag.get();
+                    }
+                
+                    // 如果不存在，则创建新标签
+                    if (tag == null) {
+                        tag = new Tag();
+                        tag.setName(tagVO.getName());
+                        tag = tagRepository.save(tag);
+                    }
+                }
+                
+                // 如果找到或创建了标签，则添加到列表
+                if (tag != null) {
+                    tags.add(tag);
+                }
             }
             product.setTags(tags);
         }
@@ -230,11 +253,35 @@ public class ProductServiceImpl implements ProductService {
         if (productDTO.getTags() != null ) {
             List<Tag> tags = new ArrayList<>();
             for (TagVO tagVO : productDTO.getTags()) {
-                Tag tag;
-                if(tagRepository.findById(tagVO.getId()).isPresent())
-                    tag=tagRepository.findById(tagVO.getId()).get();
-                else return null;
-                tags.add(tag);
+                Tag tag = null;
+                
+                // 情况1: 有ID，按ID查找
+                if (tagVO.getId() != null) {
+                    Optional<Tag> optionalTag = tagRepository.findById(tagVO.getId());
+                    if (optionalTag.isPresent()) {
+                        tag = optionalTag.get();
+                    }
+                }
+                
+                // 情况2: 有name，按name查找
+                if (tag == null && tagVO.getName() != null && !tagVO.getName().isEmpty()) {
+                    Optional<Tag> optionalTag = tagRepository.findByName(tagVO.getName());
+                    if (optionalTag.isPresent()) {
+                        tag = optionalTag.get();
+                    }
+                
+                    // 如果不存在，则创建新标签
+                    if (tag == null) {
+                        tag = new Tag();
+                        tag.setName(tagVO.getName());
+                        tag = tagRepository.save(tag);
+                    }
+                }
+                
+                // 如果找到或创建了标签，则添加到列表
+                if (tag != null) {
+                    tags.add(tag);
+                }
             }
             product.setTags(tags);
         }
