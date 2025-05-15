@@ -1,6 +1,8 @@
 package tg.cos.tomatomall.service;
 
+import tg.cos.tomatomall.dto.ChapterCheckoutDTO;
 import tg.cos.tomatomall.dto.ChapterEditDTO;
+import tg.cos.tomatomall.vo.CartCheckOutOutputVO;
 import tg.cos.tomatomall.vo.ChapterGetAllVO;
 import tg.cos.tomatomall.vo.ChapterGetVO;
 
@@ -13,4 +15,5 @@ public interface ChapterService {
     String updateChapter(ChapterEditDTO chapter) throws IOException;
     String deleteChapter(Integer id);
     List<ChapterGetAllVO> getAllChapter(Integer id);
+    CartCheckOutOutputVO checkout(Integer productId, ChapterCheckoutDTO chapterCheckoutDTO);
 }

@@ -7,10 +7,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tg.cos.tomatomall.po.*;
+import tg.cos.tomatomall.repository.AccountRepository;
 import tg.cos.tomatomall.repository.OrderRepository;
 import tg.cos.tomatomall.repository.StockpileRepository;
 import tg.cos.tomatomall.service.OrderService;
 import tg.cos.tomatomall.util.SecurityUtil;
+import tg.cos.tomatomall.vo.ChapterGetAllVO;
 import tg.cos.tomatomall.vo.OrderPayVO;
 import tg.cos.tomatomall.vo.OrderFormsVO;
 import tg.cos.tomatomall.vo.OrderItemFormVO;
@@ -23,10 +25,7 @@ import com.alipay.api.internal.util.*;
 import com.alipay.api.request.*;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +58,8 @@ public class OrderServiceImpl implements OrderService {
     private String NOTIFYURL;
     @Value("${alipay.return-url}")
     private String RETURNURL;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
     public OrderPayVO pay(Integer orderId){
@@ -125,11 +126,19 @@ public class OrderServiceImpl implements OrderService {
         order.setPayAmount(payAmount);
         order.setStatus(status);
         orderRepository.save(order);
+        Account account = order.getAccount();
 
         for (OrderItem item : order.getOrderItems()) {
             Product product = item.getProduct();
             Stockpile stockpile = product.getStockpile();
             stockpile.setFrozen(stockpile.getFrozen() - item.getQuantity());
+            if (!item.getChapters().isEmpty()){
+                for (Chapter chapter : item.getChapters()) {
+                    account.getChapters().add(chapter);
+
+                }
+                accountRepository.save(account);
+            }
         }
     }
 
@@ -159,6 +168,23 @@ public class OrderServiceImpl implements OrderService {
                 itemVO.setQuantity(item.getQuantity());
                 itemVO.setPrice(item.getProduct().getPrice());
                 itemVO.setCover(item.getProduct().getCover());
+
+                if (!item.getChapters().isEmpty()) {
+                    List<ChapterGetAllVO> chapters = item.getChapters().stream().map(chapter -> {
+                        ChapterGetAllVO chapterVO = new ChapterGetAllVO();
+                        chapterVO.setProductId(chapter.getProduct().getId());
+                        chapterVO.setStatus(chapter.getStatus());
+                        chapterVO.setId(chapter.getId());
+                        chapterVO.setNext(chapter.getNext());
+                        chapterVO.setName(chapter.getName());
+                        chapterVO.setPrevious(chapter.getPrevious());
+                        return chapterVO;
+                    }).toList();
+                    itemVO.setChapters(chapters);
+                }else {
+                    itemVO.setChapters(new ArrayList<>());
+                }
+
                 return itemVO;
             }).collect(Collectors.toList());
             
@@ -193,6 +219,21 @@ public class OrderServiceImpl implements OrderService {
                 itemVO.setQuantity(item.getQuantity());
                 itemVO.setPrice(item.getProduct().getPrice());
                 itemVO.setCover(item.getProduct().getCover());
+                if (!item.getChapters().isEmpty()) {
+                    List<ChapterGetAllVO> chapters = item.getChapters().stream().map(chapter -> {
+                        ChapterGetAllVO chapterVO = new ChapterGetAllVO();
+                        chapterVO.setProductId(chapter.getProduct().getId());
+                        chapterVO.setStatus(chapter.getStatus());
+                        chapterVO.setId(chapter.getId());
+                        chapterVO.setNext(chapter.getNext());
+                        chapterVO.setName(chapter.getName());
+                        chapterVO.setPrevious(chapter.getPrevious());
+                        return chapterVO;
+                    }).toList();
+                    itemVO.setChapters(chapters);
+                }else {
+                    itemVO.setChapters(new ArrayList<>());
+                }
                 return itemVO;
             }).collect(Collectors.toList());
             

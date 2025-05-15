@@ -91,6 +91,14 @@ public class Account {
     @Column(name = "rateProduct")
     private Set<Integer> rateProducts;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "account_chapters",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "Chapter_id")
+    )
+    private List<Chapter> chapters;
+
     public AccountDTO toDTO() {
         AccountDTO vo = new AccountDTO();
         vo.setId(id);

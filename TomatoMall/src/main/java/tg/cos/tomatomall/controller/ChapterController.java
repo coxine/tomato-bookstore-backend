@@ -1,9 +1,12 @@
 package tg.cos.tomatomall.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import tg.cos.tomatomall.dto.ChapterCheckoutDTO;
 import tg.cos.tomatomall.dto.ChapterEditDTO;
 import tg.cos.tomatomall.service.ChapterService;
+import tg.cos.tomatomall.vo.CartCheckOutOutputVO;
 import tg.cos.tomatomall.vo.ChapterGetAllVO;
 import tg.cos.tomatomall.vo.ChapterGetVO;
 import tg.cos.tomatomall.vo.Response;
@@ -71,6 +74,16 @@ public class ChapterController {
             return Response.buildSuccess(chapterGetVO);
         } else {
           return Response.buildFailure("获取章节失败","400");
+        }
+    }
+
+    @PostMapping("/{productId}/chapter/checkout")
+    public Response<?> checkout(@PathVariable("productId") Integer productId, ChapterCheckoutDTO chapterCheckoutDTO){
+        CartCheckOutOutputVO res = chapterService.checkout(productId, chapterCheckoutDTO);
+        if (res != null){
+            return Response.buildSuccess(res);
+        }else {
+            return Response.buildFailure("提交订单失败", "400");
         }
     }
 }

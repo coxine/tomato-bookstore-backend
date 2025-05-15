@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "chapter")
 @Getter
@@ -30,5 +32,7 @@ public class Chapter {
     @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(name = "FK_PRODUCT_CHAPTER"))
     private Product product;
 
+    @ManyToMany
+    private List<Account> accounts;
 
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "order_item")
 @Getter
@@ -29,4 +31,12 @@ public class OrderItem {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "OrderItem_Chapter",
+            joinColumns = @JoinColumn(name = "OrderItem_id"),
+            inverseJoinColumns = @JoinColumn(name = "Chapter_id")
+    )
+    private List<Chapter> chapters;
 }

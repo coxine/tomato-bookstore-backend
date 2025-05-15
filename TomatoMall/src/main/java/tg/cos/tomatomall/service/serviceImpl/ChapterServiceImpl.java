@@ -3,24 +3,24 @@ package tg.cos.tomatomall.service.serviceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import tg.cos.tomatomall.dto.ChapterCheckoutDTO;
 import tg.cos.tomatomall.dto.ChapterEditDTO;
-import tg.cos.tomatomall.po.Account;
-import tg.cos.tomatomall.po.Chapter;
-import tg.cos.tomatomall.po.Product;
+import tg.cos.tomatomall.po.*;
+import tg.cos.tomatomall.repository.AccountRepository;
 import tg.cos.tomatomall.repository.ChapterRepository;
+import tg.cos.tomatomall.repository.OrderRepository;
 import tg.cos.tomatomall.repository.ProductRepository;
 import tg.cos.tomatomall.service.ChapterService;
 import tg.cos.tomatomall.util.OSSUtil;
 import tg.cos.tomatomall.util.SecurityUtil;
+import tg.cos.tomatomall.vo.CartCheckOutOutputVO;
 import tg.cos.tomatomall.vo.ChapterGetAllVO;
 import tg.cos.tomatomall.vo.ChapterGetVO;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -39,6 +39,10 @@ public class ChapterServiceImpl implements ChapterService {
     private OSSUtil ossUtil;
     @Autowired
     SecurityUtil securityUtil;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
     public String addChapter(ChapterEditDTO chapter) throws IOException {
@@ -89,6 +93,8 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public ChapterGetVO getChapter(Integer id) {
+        Account account = securityUtil.getCurrentUser();
+        List<Chapter> chapters = account.getChapters();
         Optional<Chapter> chapterOptional = chapterRepository.findById(id);
         if (chapterOptional.isEmpty()) {
             return null;
@@ -105,7 +111,13 @@ public class ChapterServiceImpl implements ChapterService {
         }
         chapterGetVO.setProductId(chapter.getProduct().getId());
         chapterGetVO.setStatus(chapter.getStatus());
-        chapterGetVO.setContent(getFile(chapter.getContent()));
+        if (chapter.getStatus().equalsIgnoreCase("FREE") || chapters.contains(chapter) || account.getRole().equalsIgnoreCase("admin")) {
+            chapterGetVO.setContent(getFile(chapter.getContent()));
+        }else if (chapter.getStatus().equals("CHARGED")) {
+            chapterGetVO.setContent("该章节未购买");
+        }else if (chapter.getStatus().equals("LOCK")) {
+            chapterGetVO.setContent("该章节已锁定");
+        }
 
         return chapterGetVO;
     }
@@ -227,5 +239,65 @@ public class ChapterServiceImpl implements ChapterService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public CartCheckOutOutputVO checkout(Integer productId, ChapterCheckoutDTO chapterCheckoutDTO){
+        Account account = securityUtil.getCurrentUser();
+
+        Optional<Product> productOptional = productRepository.findById(productId);
+        if (productOptional.isEmpty()) {
+            return null;
+        }
+        Product product = productOptional.get();
+
+        Order order = new Order();
+        order.setAccount(account);
+        order.setPaymentMethod(chapterCheckoutDTO.getPayment_method());
+        order.setName(chapterCheckoutDTO.getShipping_address().getName());
+        order.setAddress(chapterCheckoutDTO.getShipping_address().getAddress());
+        order.setPhone(chapterCheckoutDTO.getShipping_address().getPhone());
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setProduct(product);
+        orderItem.setOrder(order);
+        orderItem.setQuantity(1);
+        orderItem.setAccount(account);
+        List<Chapter> chapters = new ArrayList<>();
+
+        for (Integer chapterId : chapterCheckoutDTO.getChapters()){
+            Optional<Chapter> chapterOptional = chapterRepository.findById(chapterId);
+            if (chapterOptional.isEmpty()) {
+                return null;
+            }
+            Chapter chapter = chapterOptional.get();
+            if (!chapter.getProduct().getId().equals(product.getId())) {
+                return null;
+            }
+            chapters.add(chapter);
+        }
+        orderItem.setChapters(chapters);
+
+        order.setOrderItems(new HashSet<>(List.of(orderItem)));
+        order.setTotalAmount(new BigDecimal(1));
+        order.setStatus("PENDING");
+        order.setCreateTime(new Date());
+        BigDecimal totalAmount = new BigDecimal(String.valueOf(product.getPrice()));
+        double rate = (double) chapterCheckoutDTO.getChapters().size() / product.getChapters().size();
+        totalAmount = totalAmount.multiply(new BigDecimal(rate));
+        order.setTotalAmount(totalAmount);
+
+        orderRepository.save(order);
+        account.getOrders().add(order);
+        account.getOrderItems().add(orderItem);
+        accountRepository.save(account);
+
+        CartCheckOutOutputVO result = new CartCheckOutOutputVO();
+        result.setOrderId(order.getId());
+        result.setUsername(account.getUsername());
+        result.setTotalAmount(totalAmount);
+        result.setPaymentMethod(chapterCheckoutDTO.getPayment_method());
+        result.setCreateTime(order.getCreateTime());
+        result.setStatus(order.getStatus());
+        return result;
     }
 }
