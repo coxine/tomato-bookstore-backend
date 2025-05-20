@@ -86,4 +86,14 @@ public class ChapterController {
             return Response.buildFailure("提交订单失败", "400");
         }
     }
+
+    @GetMapping("/{productId}/account/{accountId}/chapters")
+    public Response<?> findChaptersBought(@PathVariable("productId") Integer productId, @PathVariable("accountId") Integer accountId) throws IOException {
+        int[] res = chapterService.findChaptersBought(productId, accountId);
+        if (res != null){
+            return Response.buildSuccess(res);
+        }else {
+            return Response.buildFailure("查询失败","400");
+        }
+    }
 }

@@ -16,4 +16,5 @@ public interface ChapterService {
     String deleteChapter(Integer id);
     List<ChapterGetAllVO> getAllChapter(Integer id);
     CartCheckOutOutputVO checkout(Integer productId, ChapterCheckoutDTO chapterCheckoutDTO);
+    int[] findChaptersBought(Integer productId, Integer accountId);
 }

@@ -300,4 +300,35 @@ public class ChapterServiceImpl implements ChapterService {
         result.setStatus(order.getStatus());
         return result;
     }
+
+    @Override
+    public int[] findChaptersBought(Integer productId, Integer accountId) {
+        Optional<Account> accountOptional = accountRepository.findById(accountId);
+        if (accountOptional.isEmpty()) {
+            return null;
+        }
+        Account account = accountOptional.get();
+        Account account1 = securityUtil.getCurrentUser();
+        if (!account1.getRole().equalsIgnoreCase("admin") && account.getId() != account1.getId()) {
+            return null;
+        }
+        Optional<Product> productOptional = productRepository.findById(productId);
+        if (productOptional.isEmpty()) {
+            return null;
+        }
+        Product product = productOptional.get();
+        List<Chapter> chapters = product.getChapters();
+        List<Chapter> chapters1 = account.getChapters();
+        int[] result = new int[chapters.size()];
+        int index = 0;
+        for (Chapter chapter : chapters1) {
+            if (chapter.getProduct().getId().equals(product.getId())) {
+                result[index] = chapter.getId();
+                index++;
+            }
+        }
+        int[] res = new int[index];
+        System.arraycopy(result, 0, res, 0, index);
+        return res;
+    }
 }
