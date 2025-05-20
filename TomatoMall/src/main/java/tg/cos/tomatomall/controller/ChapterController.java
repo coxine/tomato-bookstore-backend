@@ -97,7 +97,7 @@ public class ChapterController {
         }
     }
 
-    @GetMapping("/api/products/{productId}/account/chapters")
+    @GetMapping("/{productId}/account/chapters")
     public Response<?> findChaptersBought(@PathVariable("productId") Integer productId) throws IOException {
         int[] res = chapterService.findChaptersBought(productId);
         if (res != null){
