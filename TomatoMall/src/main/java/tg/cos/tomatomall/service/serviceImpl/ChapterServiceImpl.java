@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -319,14 +320,20 @@ public class ChapterServiceImpl implements ChapterService {
         Product product = productOptional.get();
         List<Chapter> chapters = product.getChapters();
         List<Chapter> chapters1 = account.getChapters();
+        List<Chapter> chapters2 = chapters.stream().filter(chapters1::contains).toList();
         int[] result = new int[chapters.size()];
         int index = 0;
-        for (Chapter chapter : chapters1) {
-            if (chapter.getProduct().getId().equals(product.getId())) {
-                result[index] = chapter.getId();
-                index++;
-            }
+        for (Chapter chapter : chapters2) {
+            result[index++] = chapter.getId();
+            index++;
         }
+
+//        for (Chapter chapter : chapters1) {
+//            if (chapter.getProduct().getId().equals(product.getId())) {
+//                result[index] = chapter.getId();
+//                index++;
+//            }
+//        }
         int[] res = new int[index];
         System.arraycopy(result, 0, res, 0, index);
         return res;
