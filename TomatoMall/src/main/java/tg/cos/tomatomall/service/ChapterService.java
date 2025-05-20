@@ -17,4 +17,5 @@ public interface ChapterService {
     List<ChapterGetAllVO> getAllChapter(Integer id);
     CartCheckOutOutputVO checkout(Integer productId, ChapterCheckoutDTO chapterCheckoutDTO);
     int[] findChaptersBought(Integer productId, Integer accountId);
+    int[] findChaptersBought(Integer productId);
 }

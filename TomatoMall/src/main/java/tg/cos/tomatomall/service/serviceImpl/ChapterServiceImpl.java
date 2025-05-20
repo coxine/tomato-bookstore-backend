@@ -338,4 +338,26 @@ public class ChapterServiceImpl implements ChapterService {
         System.arraycopy(result, 0, res, 0, index);
         return res;
     }
+
+    @Override
+    public int[] findChaptersBought(Integer productId) {
+        Account account = securityUtil.getCurrentUser();
+        Optional<Product> productOptional = productRepository.findById(productId);
+        if (productOptional.isEmpty()) {
+            return null;
+        }
+        Product product = productOptional.get();
+        List<Chapter> chapters = product.getChapters();
+        List<Chapter> chapters1 = account.getChapters();
+        List<Chapter> chapters2 = chapters.stream().filter(chapters1::contains).toList();
+        int[] result = new int[chapters.size()];
+        int index = 0;
+        for (Chapter chapter : chapters2) {
+            result[index++] = chapter.getId();
+            index++;
+        }
+        int[] res = new int[index];
+        System.arraycopy(result, 0, res, 0, index);
+        return res;
+    }
 }
