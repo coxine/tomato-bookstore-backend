@@ -236,10 +236,14 @@ public class ProductServiceImpl implements ProductService {
             List<Specification> specifications = product.getSpecifications();
             for (SpecificationVO specVO : productDTO.getSpecifications()) {
                 Specification specification = new Specification();
-                specification.setProduct(product);
                 if (specVO.getId() != null) {
-                    specification.setId(specVO.getId());
+                    Optional<Specification> optionalSpecification = specificationRepository.findById(specVO.getId());
+                    if (optionalSpecification.isPresent()) {
+                        specification = optionalSpecification.get();
+                    }
                 }
+                specification.setProduct(product);
+
                 specification.setItem(specVO.getItem());
                 specification.setValue(specVO.getValue());
                 specifications.add(specification);
