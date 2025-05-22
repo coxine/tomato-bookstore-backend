@@ -178,6 +178,7 @@ public class ChapterServiceImpl implements ChapterService {
     @Override
     public List<ChapterGetAllVO> getAllChapter(Integer id) {
         Optional<Product> productOptional = productRepository.findById(id);
+        Account account = securityUtil.getCurrentUser();
         if (productOptional.isEmpty()) {
             return null;
         }
@@ -195,6 +196,9 @@ public class ChapterServiceImpl implements ChapterService {
             }
             chapterGetAllVO.setStatus(chapter.getStatus());
             chapterGetAllVO.setProductId(product.getId());
+            if (account.getChapters().contains(chapter)) {
+                chapterGetAllVO.setPurchased(true);
+            }
             chapterGetAllVOList.add(chapterGetAllVO);
         }
         return chapterGetAllVOList;

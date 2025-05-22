@@ -12,4 +12,5 @@ public class ChapterGetAllVO {
     private int previous;
     private int next;
     private String status;
+    private boolean isPurchased;
 }
