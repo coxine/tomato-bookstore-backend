@@ -203,6 +203,7 @@ public class ChapterServiceImpl implements ChapterService {
             if (account.getChapters().contains(chapter)) {
                 chapterGetAllVO.setPurchased(true);
             }
+            chapterGetAllVO.setPrice(chapter.getPrice());
             chapterGetAllVOList.add(chapterGetAllVO);
         }
         return chapterGetAllVOList;

@@ -3,6 +3,8 @@ package tg.cos.tomatomall.vo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 public class ChapterGetAllVO {
@@ -13,4 +15,5 @@ public class ChapterGetAllVO {
     private int next;
     private String status;
     private boolean isPurchased;
+    private BigDecimal price;
 }
