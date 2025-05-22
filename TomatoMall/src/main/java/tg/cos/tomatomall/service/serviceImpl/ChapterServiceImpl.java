@@ -299,6 +299,7 @@ public class ChapterServiceImpl implements ChapterService {
         for (Chapter chapter : chapters) {
             totalAmount = totalAmount.add(chapter.getPrice());
         }
+        order.setTotalAmount(totalAmount);
 
         orderRepository.save(order);
         account.getOrders().add(order);
