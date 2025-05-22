@@ -170,6 +170,7 @@ public class OrderServiceImpl implements OrderService {
                 itemVO.setCover(item.getProduct().getCover());
 
                 if (!item.getChapters().isEmpty()) {
+                    itemVO.setFullyPurchased(false);
                     List<ChapterGetAllVO> chapters = item.getChapters().stream().map(chapter -> {
                         ChapterGetAllVO chapterVO = new ChapterGetAllVO();
                         chapterVO.setProductId(chapter.getProduct().getId());
@@ -184,6 +185,7 @@ public class OrderServiceImpl implements OrderService {
                     }).toList();
                     itemVO.setChapters(chapters);
                 }else {
+                    itemVO.setFullyPurchased(true);
                     itemVO.setChapters(new ArrayList<>());
                 }
 

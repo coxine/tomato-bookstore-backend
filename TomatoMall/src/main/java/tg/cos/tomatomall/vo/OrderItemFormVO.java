@@ -15,4 +15,5 @@ public class OrderItemFormVO {
     private BigDecimal price;
     private String cover;
     private List<ChapterGetAllVO> chapters;
+    private boolean isFullyPurchased;
 }
