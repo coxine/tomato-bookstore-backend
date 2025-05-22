@@ -143,6 +143,7 @@ public class ChapterServiceImpl implements ChapterService {
         }
         if (chapter.getContent() != null) {
             chapterEntity.setContent(uploadFile(convertStringToMultipartFile(chapter.getContent())));
+            chapterEntity.setPrice(new BigDecimal(chapter.getContent().length()).divide(new BigDecimal(100)));
         }
         if (chapter.getPrevious() != null) {
             chapterEntity.setPrevious(chapter.getPrevious());
