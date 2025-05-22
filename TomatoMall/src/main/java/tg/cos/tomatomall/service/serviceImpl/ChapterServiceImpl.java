@@ -61,6 +61,9 @@ public class ChapterServiceImpl implements ChapterService {
         Chapter chapterEntity = new Chapter();
         chapterEntity.setName(chapter.getName());
         chapterEntity.setContent(uploadFile(convertStringToMultipartFile(chapter.getContent())));
+        BigDecimal price = new BigDecimal(chapter.getContent().length());
+        price = price.divide(new BigDecimal(100));
+        chapterEntity.setPrice(price);
         chapterEntity.setProduct(product);
         if (chapter.getStatus().equalsIgnoreCase("FREE") ||
                 chapter.getStatus().equalsIgnoreCase("CHARGED") ||
@@ -286,10 +289,14 @@ public class ChapterServiceImpl implements ChapterService {
         order.setTotalAmount(new BigDecimal(1));
         order.setStatus("PENDING");
         order.setCreateTime(new Date());
-        BigDecimal totalAmount = new BigDecimal(String.valueOf(product.getPrice()));
-        double rate = (double) chapterCheckoutDTO.getChapters().size() / product.getChapters().size();
-        totalAmount = totalAmount.multiply(new BigDecimal(rate));
-        order.setTotalAmount(totalAmount);
+//        BigDecimal totalAmount = new BigDecimal(String.valueOf(product.getPrice()));
+//        double rate = (double) chapterCheckoutDTO.getChapters().size() / product.getChapters().size();
+//        totalAmount = totalAmount.multiply(new BigDecimal(rate));
+//        order.setTotalAmount(totalAmount);
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        for (Chapter chapter : chapters) {
+            totalAmount = totalAmount.add(chapter.getPrice());
+        }
 
         orderRepository.save(order);
         account.getOrders().add(order);
