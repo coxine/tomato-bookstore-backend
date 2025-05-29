@@ -21,11 +21,22 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
-    private final SecurityUtil securityUtil;
-
-    @Override
+    private final SecurityUtil securityUtil;    
+    @Transactional
     public List<TagVO> getAllTags() {
         List<Tag> tags = tagRepository.findAll();
+        
+        // 找出没有绑定商品的标签并删除
+        List<Tag> tagsToDelete = tags.stream()
+                .filter(tag -> tag.getProducts().isEmpty())
+                .collect(Collectors.toList());
+        
+        if (!tagsToDelete.isEmpty()) {
+            tagRepository.deleteAll(tagsToDelete);
+            // 重新获取删除后的标签列表
+            tags = tagRepository.findAll();
+        }
+        
         return tags.stream()
                 .map(this::convertToTagVO)
                 .collect(Collectors.toList());
