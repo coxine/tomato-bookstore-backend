@@ -62,7 +62,7 @@ public class ChapterServiceImpl implements ChapterService {
         chapterEntity.setName(chapter.getName());
         chapterEntity.setContent(uploadFile(convertStringToMultipartFile(chapter.getContent())));
         BigDecimal price = new BigDecimal(chapter.getContent().length());
-        price = price.divide(new BigDecimal(100));
+        price = price.divide(new BigDecimal(10000));
         chapterEntity.setPrice(price);
         chapterEntity.setProduct(product);
         if (!chapter.getStatus().equalsIgnoreCase("FREE") &&
@@ -143,7 +143,7 @@ public class ChapterServiceImpl implements ChapterService {
         }
         if (chapter.getContent() != null) {
             chapterEntity.setContent(uploadFile(convertStringToMultipartFile(chapter.getContent())));
-            chapterEntity.setPrice(new BigDecimal(chapter.getContent().length()).divide(new BigDecimal(100)));
+            chapterEntity.setPrice(new BigDecimal(chapter.getContent().length()).divide(new BigDecimal(10000)));
         }
         if (chapter.getPrevious() != null) {
             chapterEntity.setPrevious(chapter.getPrevious());
