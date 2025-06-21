@@ -67,14 +67,11 @@ public class AccountController {
         }
         return Response.buildFailure(result,"400");
     }
-
-
     @PutMapping("/password")
     public Response<?> changePassword(@RequestBody AccountDTO accountDTO) {
         String result = accountService.changePassword(accountDTO);
         if ("密码修改成功".equals(result)) {
-            return Response.buildSuccess(result);
-        }
+            return Response.buildSuccess(result);}
         return Response.buildFailure(result, "400");
     }
 }

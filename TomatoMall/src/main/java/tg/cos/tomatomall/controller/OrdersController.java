@@ -83,6 +83,7 @@ public class OrdersController {
     @GetMapping("/userOrders")
     public Response<?> getUserOrders() {
         Integer accountId=securityUtil.getCurrentUser().getId();
+        System.out.println("当前用户ID: " + accountId);
         List<OrderFormsVO> orders = orderService.getUserOrders(accountId);
         return Response.buildSuccess(orders);
     }

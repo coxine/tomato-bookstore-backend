@@ -145,7 +145,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderFormsVO> getUserOrders(Integer accountId) {
         Account account = securityUtil.getCurrentUser();
-        if ( account.getId() != accountId || !account.getRole().equalsIgnoreCase("admin")) {
+        if ( account.getId() != accountId) {
             return null;
         }
         List<Order> orders = orderRepository.findByAccountId(accountId);
